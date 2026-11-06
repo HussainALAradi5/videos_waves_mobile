@@ -66,3 +66,13 @@ Widgets only render; data and actions come from controllers. No widget file is l
 ## Security
 
 Tokens are stored with `flutter_secure_storage` (Keychain on iOS, the Keystore on Android). A 401 triggers one queued refresh and a single retry. If the refresh fails, the session is cleared and the app shows "session expired". Route guards only improve the UI; the API enforces every permission.
+
+## Screenshots
+
+Captured from the web build (`flutter build web --dart-define=API_BASE_URL=http://localhost:5000`) at 375 px against the in-memory API with the demo seed, signed in as `viewer`.
+
+| Feed (dark) | Inbox | Chat | Chat with a reaction |
+| --- | --- | --- | --- |
+| ![Feed](docs/screenshots/phone-dark-feed.jpg) | ![Inbox](docs/screenshots/phone-light-inbox.jpg) | ![Chat](docs/screenshots/phone-light-chat.jpg) | ![Chat with a reaction](docs/screenshots/phone-dark-chat.jpg) |
+
+The demo videos are linked sample clips with no thumbnail image, so cards show the steel-blue placeholder; videos uploaded through ImageKit get thumbnails.

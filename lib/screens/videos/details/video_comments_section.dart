@@ -33,7 +33,9 @@ class VideoCommentsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${AppMessages.commentsTitle} (${comments.totalItems})', style: Theme.of(context).textTheme.titleMedium),
+        // The video's count includes replies, so it matches the feed card.
+        Text('${AppMessages.commentsTitle} (${context.select<VideoDetailsController, int>((details) => details.video?.commentsCount ?? 0)})',
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: Spacing.sm),
         if (isSignedIn)
           CommentComposer(isPosting: comments.isPosting, onSubmit: (content) => _post(context, content))

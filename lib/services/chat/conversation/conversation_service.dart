@@ -1,3 +1,4 @@
+import '../../../enums/chat/conversation/mute_duration.dart';
 import '../../../config/api/endpoints/chat_endpoints.dart';
 import '../../../dtos/common/pagination/page_request_dto.dart';
 import '../../../enums/chat/conversation/inbox_folder.dart';
@@ -29,8 +30,9 @@ class ConversationService {
 
   Future<void> markRead(String id) => _client.post(ChatEndpoints.read(id), ignoreBody);
 
-  Future<Conversation> setMuted(String id, {required bool isMuted}) =>
-      _client.patch(ChatEndpoints.conversation(id), Conversation.fromJson, body: {'isMuted': isMuted});
+  /// Mute for 8 hours, a week, until unmuted, or `off` to unmute.
+  Future<Conversation> mute(String id, MuteDuration duration) =>
+      _client.patch(ChatEndpoints.conversation(id), Conversation.fromJson, body: {'mute': duration.wire});
 
   Future<void> leave(String id, String myUserId) => _client.delete(ChatEndpoints.member(id, myUserId), ignoreBody);
 }

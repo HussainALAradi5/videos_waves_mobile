@@ -19,6 +19,7 @@ class User with BaseModel {
     this.followingCount = 0,
     this.videosCount = 0,
     this.isActive = true,
+    this.phone,
   });
 
   factory User.fromJson(JsonMap json) => User(
@@ -26,6 +27,7 @@ class User with BaseModel {
         code: json['code'] as String,
         userName: json['userName'] as String,
         email: json['email'] as String,
+        phone: json['phone'] as String?,
         role: Role.fromWire(json['role'] as String),
         gender: json['gender'] == null ? null : Gender.fromWire(json['gender'] as String),
         avatarUrl: json['avatarUrl'] as String?,
@@ -43,6 +45,9 @@ class User with BaseModel {
   final String code;
   final String userName;
   final String email;
+
+  /// Private: only the owner and admins see it.
+  final String? phone;
   final Role role;
   final Gender? gender;
   final String? avatarUrl;

@@ -50,7 +50,7 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
       body: ConstrainedContent(
         child: UserListView(
           controller: _results,
-          empty: const EmptyView(title: SocialMessages.searchPrompt, icon: Icons.travel_explore),
+          empty: const EmptyView(title: SocialMessages.searchPrompt, message: SocialMessages.searchPromptHint, icon: Icons.travel_explore),
         ),
       ),
     );

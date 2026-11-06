@@ -26,7 +26,7 @@ class AccountStatusButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return isActive
-        ? AppButton(label: AdminUsersMessages.deactivate, tone: ButtonTone.danger, onPressed: () => _deactivate(context))
+        ? AppButton(label: AdminUsersMessages.deactivate, tone: ButtonTone.dangerSoft, onPressed: () => _deactivate(context))
         : AppButton(label: AdminUsersMessages.activate, tone: ButtonTone.secondary, onPressed: () => onChanged(true));
   }
 }

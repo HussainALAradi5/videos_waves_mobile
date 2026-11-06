@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../constants/common/app_colors_constants.dart';
 import '../../../constants/common/gradients_constants.dart';
 import '../../../constants/common/radii_constants.dart';
 import '../../../enums/common/button_tone.dart';
@@ -39,10 +40,16 @@ class _AppButtonState extends State<AppButton> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final isGradient = widget.tone == ButtonTone.gradient;
-    final foreground = isGradient || widget.tone == ButtonTone.primary || widget.tone == ButtonTone.danger ? Colors.white : scheme.onSurface;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final foreground = switch (widget.tone) {
+      ButtonTone.gradient || ButtonTone.primary || ButtonTone.danger => Colors.white,
+      ButtonTone.dangerSoft => isDark ? AppColors.dangerSoftDark : AppColors.danger,
+      _ => scheme.onSurface,
+    };
     final background = switch (widget.tone) {
-      ButtonTone.primary => scheme.primary,
-      ButtonTone.danger => scheme.error,
+      ButtonTone.primary => AppColors.brandStart,
+      ButtonTone.danger => AppColors.danger,
+      ButtonTone.dangerSoft => AppColors.danger.withValues(alpha: isDark ? 0.18 : 0.10),
       ButtonTone.secondary => scheme.surfaceContainerHighest,
       _ => Colors.transparent,
     };

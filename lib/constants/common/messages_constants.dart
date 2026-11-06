@@ -25,6 +25,7 @@ class AppMessages {
   static const String identifierLabel = 'Username or email';
   static const String userNameLabel = 'Username';
   static const String emailLabel = 'Email';
+  static const String phoneLabel = 'Phone number (optional, with country code)';
   static const String passwordLabel = 'Password';
   static const String loginSubmit = 'Sign in';
   static const String registerSubmit = 'Create account';

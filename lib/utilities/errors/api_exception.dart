@@ -1,3 +1,4 @@
+import 'upload_rejected_exception.dart';
 import 'package:dio/dio.dart';
 
 import '../../constants/common/messages_constants.dart';
@@ -40,4 +41,8 @@ class ApiException implements Exception {
 }
 
 /// A readable message for any error shown to the user.
-String errorMessageOf(Object error) => error is ApiException ? error.message : AppMessages.unexpectedError;
+String errorMessageOf(Object error) => switch (error) {
+      ApiException(:final message) => message,
+      UploadRejectedException(:final message) => message,
+      _ => AppMessages.unexpectedError,
+    };

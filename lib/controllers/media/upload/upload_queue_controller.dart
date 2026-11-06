@@ -5,7 +5,9 @@ import '../../../enums/media/media/media_kind.dart';
 import '../../../enums/media/upload/upload_status.dart';
 import '../../../models/media/upload/upload_item.dart';
 import '../../../services/media/media/media_upload_service.dart';
+import '../../../enums/common/toast_type.dart';
 import '../../../utilities/errors/api_exception.dart';
+import '../../../utilities/ui/feedback_utility.dart';
 
 /// Several files uploading side by side to the CDN, each with its own progress, remove, and retry.
 class UploadQueueController extends ChangeNotifier {
@@ -65,6 +67,8 @@ class UploadQueueController extends ChangeNotifier {
       item
         ..status = UploadStatus.failed
         ..error = errorMessageOf(error);
+      // Also a toast at the top, so a refused file (over the limit, wrong type) is impossible to miss.
+      showToast(ToastType.error, item.error!);
     }
     if (_items.contains(item)) notifyListeners();
   }

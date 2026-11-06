@@ -8,6 +8,8 @@ import '../../../enums/media/media/media_kind.dart';
 import '../../../models/common/json_map.dart';
 import '../../../models/media/media/media.dart';
 import '../../../models/media/media/upload_signature.dart';
+import '../../../utilities/errors/upload_rejected_exception.dart';
+import '../../../utilities/format/media_format_utility.dart';
 import '../../api/api_client.dart';
 
 /// Uploads one file without it passing through our server: sign, upload straight to the provider
@@ -22,8 +24,10 @@ class MediaUploadService {
 
   Future<Media> upload(PickedFileDto file, MediaKind kind, {void Function(double progress)? onProgress}) async {
     final signature = await _client.post(MediaEndpoints.signature, UploadSignature.fromJson, body: {'kind': kind.wire});
-    if (!signature.mimeTypes.contains(file.mimeType)) throw Exception(MediaMessages.typeNotAllowed);
-    if (file.sizeBytes > signature.maxBytes) throw Exception(MediaMessages.tooLarge);
+    if (!signature.mimeTypes.contains(file.mimeType)) throw UploadRejectedException(MediaMessages.fileTypeNotAllowed(file.name));
+    if (file.sizeBytes > signature.maxBytes) {
+      throw UploadRejectedException(MediaMessages.fileTooLarge(file.name, formatFileSize(signature.maxBytes)));
+    }
     final multipart = file.bytes != null
         ? MultipartFile.fromBytes(file.bytes!, filename: file.name, contentType: DioMediaType.parse(file.mimeType))
         : await MultipartFile.fromFile(file.path!, filename: file.name, contentType: DioMediaType.parse(file.mimeType));

@@ -7,6 +7,8 @@ import '../../../constants/common/routes_constants.dart';
 import '../../../controllers/chat/thread/thread_controller.dart';
 import '../../../utilities/chat/conversation_utility.dart';
 import '../../../widgets/common/avatars/user_avatar.dart';
+import '../../../constants/chat/chat_options_constants.dart';
+import '../../../widgets/chat/options/chat_options_sheet.dart';
 
 /// Avatar and name, with "typing..." or "Active now" under it.
 class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -41,6 +43,23 @@ class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ]),
       ),
+      actions: [
+        IconButton(
+          tooltip: ChatOptionsMessages.menu,
+          icon: const Icon(Icons.more_horiz),
+          onPressed: () async {
+            final thread = context.read<ThreadController>();
+            final router = GoRouter.of(context);
+            final result = await showChatOptions(context, conversation);
+            // After deleting or leaving, go back to the inbox; after a mute change, reload the chat.
+            if (result == ChatOptionResult.removed) {
+              router.canPop() ? router.pop() : router.go(AppRoutes.messages);
+            } else if (result == ChatOptionResult.muteChanged) {
+              await thread.load();
+            }
+          },
+        ),
+      ],
     );
   }
 }

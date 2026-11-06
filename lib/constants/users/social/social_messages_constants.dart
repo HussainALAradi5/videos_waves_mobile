@@ -23,7 +23,7 @@ class SocialMessages {
   static const String noVideos = 'No videos yet';
   static const String noUsers = 'Nobody here yet';
   static const String searchTitle = 'Search';
-  static const String searchHint = 'Email or phone number';
-  static const String searchPrompt = 'Find someone by email or phone';
-  static const String searchPromptHint = 'Type their full email or phone number with the country code. Partial names do not match.';
+  static const String searchHint = 'Username, email, or phone';
+  static const String searchPrompt = 'Find people';
+  static const String searchPromptHint = 'Type part of a username, email, or phone number. Capital letters do not matter.';
 }

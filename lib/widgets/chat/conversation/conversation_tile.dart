@@ -9,10 +9,13 @@ import '../../common/avatars/user_avatar.dart';
 
 /// Inbox row: avatar with presence, name, latest preview, time, and an unread dot.
 class ConversationTile extends StatelessWidget {
-  const ConversationTile({super.key, required this.conversation, required this.onTap});
+  const ConversationTile({super.key, required this.conversation, required this.onTap, this.onOptions});
 
   final Conversation conversation;
   final VoidCallback onTap;
+
+  /// Long-press opens the chat options.
+  final VoidCallback? onOptions;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,7 @@ class ConversationTile extends StatelessWidget {
     final subtitle = conversation.lastPreview ?? (conversation.isGroup ? ChatMessages.members(conversation.membersCount + 1) : '');
     return ListTile(
       onTap: onTap,
+      onLongPress: onOptions,
       leading: avatar,
       title: Text(conversation.displayTitle, style: TextStyle(fontWeight: isUnread ? FontWeight.w700 : FontWeight.w500)),
       subtitle: Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: isUnread ? const TextStyle(fontWeight: FontWeight.w600) : null),

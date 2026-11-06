@@ -16,6 +16,7 @@ import '../../../widgets/common/layout/constrained_content.dart';
 import '../../../widgets/common/lists/paged_list_view.dart';
 import '../../../widgets/common/motion/fade_slide_in.dart';
 import '../../../widgets/common/tabs/segmented_tabs.dart';
+import '../../../widgets/chat/options/chat_options_sheet.dart';
 import 'new_chat_flow.dart';
 
 const List<DropdownOption<InboxFolder>> _folders = [
@@ -75,7 +76,14 @@ class _InboxBody extends StatelessWidget {
           controller: inbox,
           empty: const EmptyView(title: ChatMessages.noChats, message: ChatMessages.noChatsHint, icon: Icons.forum_outlined),
           itemBuilder: (context, conversation) => FadeSlideIn(
-            child: ConversationTile(conversation: conversation, onTap: () => _open(context, conversation.id)),
+            child: ConversationTile(
+              conversation: conversation,
+              onTap: () => _open(context, conversation.id),
+              onOptions: () async {
+                final inbox = context.read<InboxController>();
+                if (await showChatOptions(context, conversation) != null) inbox.loadFirstPage();
+              },
+            ),
           ),
         ),
       ),

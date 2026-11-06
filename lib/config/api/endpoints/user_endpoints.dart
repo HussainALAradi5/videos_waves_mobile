@@ -1,6 +1,7 @@
 class UserEndpoints {
   const UserEndpoints._();
 
+  static const String root = '/users';
   static const String me = '/users/me';
   static const String mePassword = '/users/me/password';
   static const String meAvatar = '/users/me/avatar';
@@ -13,4 +14,5 @@ class UserEndpoints {
   static String following(String userName) => '${profile(userName)}/following';
   static String block(String userName) => '${profile(userName)}/block';
   static String restrict(String userName) => '${profile(userName)}/restrict';
+  static String status(String userName) => '${profile(userName)}/status';
 }

@@ -32,6 +32,7 @@ class AppDependencies {
     required this.conversationService,
     required this.messageService,
     required this.socketService,
+    required this.apiClient,
   });
 
   factory AppDependencies.create() {
@@ -56,6 +57,7 @@ class AppDependencies {
       conversationService: conversationService,
       messageService: MessageService(client),
       socketService: socketService,
+      apiClient: client,
     );
   }
 
@@ -71,4 +73,5 @@ class AppDependencies {
   final ConversationService conversationService;
   final MessageService messageService;
   final SocketService socketService;
+  final ApiClient apiClient;
 }

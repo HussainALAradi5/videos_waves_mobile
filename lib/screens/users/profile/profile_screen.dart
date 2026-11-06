@@ -29,7 +29,10 @@ class ProfileScreen extends StatelessWidget {
     if (target == null) return const SizedBox.shrink();
     return ChangeNotifierProvider(
       key: ValueKey(target),
-      create: (context) => ProfileController(context.read<AppDependencies>().socialService, target)..load(),
+      create: (context) {
+        final dependencies = context.read<AppDependencies>();
+        return ProfileController(dependencies.socialService, dependencies.apiClient, target)..load();
+      },
       child: _ProfileBody(isMe: target == me),
     );
   }

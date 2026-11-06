@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../constants/common/routes_constants.dart';
 import '../../../constants/common/ui_constants.dart';
+import '../../../constants/users/admin_users/admin_users_constants.dart';
 import '../../../constants/users/social/social_messages_constants.dart';
+import '../../../enums/users/roles/role.dart';
 import '../../../controllers/users/auth/auth_controller.dart';
 import '../../../controllers/users/profile/profile_controller.dart';
 import '../../../enums/common/button_tone.dart';
@@ -50,6 +52,7 @@ class ProfileActions extends StatelessWidget {
     }
     final controller = context.read<ProfileController>();
     final isSignedIn = context.select<AuthController, bool>((auth) => auth.isAuthenticated);
+    final isAdmin = context.select<AuthController, bool>((auth) => auth.isAdmin);
     Future<void> requireSignIn(Future<void> Function() action) async {
       if (!isSignedIn) {
         context.push('${AppRoutes.login}?${AppRoutes.redirectParam}=${Uri.encodeComponent(AppRoutes.user(profile.user.userName))}');
@@ -80,6 +83,13 @@ class ProfileActions extends StatelessWidget {
             icon: Icons.do_not_disturb_on_outlined,
             onSelected: () => runWithFeedback(context, () => controller.setRestricted(!profile.isRestricted)),
           ),
+          if (isAdmin && profile.role != Role.admin)
+            ActionItem(
+              label: profile.isActive ? AdminUsersMessages.deactivate : AdminUsersMessages.activate,
+              icon: profile.isActive ? Icons.person_off_outlined : Icons.person_outline,
+              isDanger: profile.isActive,
+              onSelected: () => runWithFeedback(context, () => controller.setActive(!profile.isActive)),
+            ),
           ActionItem(
             label: profile.isBlocked ? SocialMessages.unblock : SocialMessages.block,
             icon: Icons.block,

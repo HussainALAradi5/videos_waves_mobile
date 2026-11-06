@@ -6,6 +6,7 @@ import '../../screens/chat/inbox/inbox_screen.dart';
 import '../../screens/chat/thread/thread_screen.dart';
 import '../../screens/common/home_shell.dart';
 import '../../screens/users/admin_requests/admin_requests_screen.dart';
+import '../../screens/users/admin_users/admin_users_screen.dart';
 import '../../screens/users/auth/login_screen.dart';
 import '../../screens/users/auth/register_screen.dart';
 import '../../screens/users/profile/profile_screen.dart';
@@ -45,6 +46,7 @@ GoRouter createAppRouter(AuthController auth) => GoRouter(
         ),
         GoRoute(path: AppRoutes.settings, builder: (_, _) => const SettingsScreen()),
         GoRoute(path: AppRoutes.adminRequests, builder: (_, _) => const AdminRequestsScreen()),
+        GoRoute(path: AppRoutes.adminUsers, builder: (_, _) => const AdminUsersScreen()),
         GoRoute(path: AppRoutes.login, builder: (_, _) => const LoginScreen()),
         GoRoute(path: AppRoutes.register, builder: (_, _) => const RegisterScreen()),
       ],

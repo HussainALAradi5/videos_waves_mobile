@@ -20,11 +20,14 @@ class VideoDetailsScreen extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => VideoDetailsController(dependencies.videoService, videoId, onVideoChanged: feed.updateVideo)..load(),
+          create: (_) => VideoDetailsController(
+            dependencies.videoService,
+            videoId,
+            onVideoChanged: feed.updateVideo,
+            onVideoDeleted: feed.removeVideo,
+          )..load(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => CommentListController(dependencies.commentService, videoId)..loadFirstPage(),
-        ),
+        ChangeNotifierProvider(create: (_) => CommentListController(dependencies.commentService, videoId)..loadFirstPage()),
       ],
       child: const VideoDetailsBody(),
     );

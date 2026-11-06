@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants/common/ui_constants.dart';
+import '../../common/waves/wave_mark.dart';
 import '../../common/layout/constrained_content.dart';
 
 /// Shared frame for the sign-in and register forms.
@@ -21,7 +22,7 @@ class AuthFormCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.waves, size: Spacing.xl * 2),
+                const Center(child: WaveMark(size: Spacing.xl * 2)),
                 const SizedBox(height: Spacing.md),
                 Text(title, style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
                 const SizedBox(height: Spacing.lg),

@@ -6,13 +6,12 @@ import '../../../constants/common/ui_constants.dart';
 import '../../../controllers/users/auth/auth_controller.dart';
 import '../../../controllers/videos/comment/comment_list_controller.dart';
 import '../../../controllers/videos/video/video_details_controller.dart';
-import '../../../models/videos/comment/comment.dart';
 import '../../../utilities/ui/feedback_utility.dart';
-import '../../../widgets/common/dialogs/confirm_dialog.dart';
 import '../../../widgets/common/feedback/error_view.dart';
-import '../../../widgets/common/feedback/loading_view.dart';
+import '../../../widgets/common/feedback/skeleton_list.dart';
+import '../../../widgets/common/motion/fade_slide_in.dart';
 import '../../../widgets/videos/comment/comment_composer.dart';
-import '../../../widgets/videos/comment/comment_tile.dart';
+import 'comment_thread.dart';
 
 class VideoCommentsSection extends StatelessWidget {
   const VideoCommentsSection({super.key});
@@ -26,50 +25,29 @@ class VideoCommentsSection extends StatelessWidget {
     });
   }
 
-  Future<void> _delete(BuildContext context, Comment comment) async {
-    final comments = context.read<CommentListController>();
-    final details = context.read<VideoDetailsController>();
-    final isConfirmed = await ConfirmDialog.show(
-      context,
-      title: AppMessages.deleteCommentTitle,
-      message: AppMessages.deleteCommentBody,
-      confirmLabel: AppMessages.delete,
-    );
-    if (!isConfirmed || !context.mounted) return;
-    await runWithFeedback(context, () async {
-      await comments.remove(comment);
-      details.adjustCommentsCount(-1);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
+    final isSignedIn = context.select<AuthController, bool>((auth) => auth.isAuthenticated);
     final comments = context.watch<CommentListController>();
-    final user = auth.user;
-    bool canDelete(Comment comment) => user != null && (user.isAdmin || user.id == comment.author.id);
-
+    final items = comments.items;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('${AppMessages.commentsTitle} (${comments.totalItems})', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: Spacing.sm),
-        if (auth.isAuthenticated)
+        if (isSignedIn)
           CommentComposer(isPosting: comments.isPosting, onSubmit: (content) => _post(context, content))
         else
           const Text(AppMessages.signInToComment),
         const SizedBox(height: Spacing.sm),
-        if (comments.isLoading && comments.items.isEmpty) const LoadingView(),
-        if (comments.error != null && comments.items.isEmpty) ErrorView(error: comments.error!, onRetry: comments.loadFirstPage),
+        if (comments.isLoading && items.isEmpty) const SkeletonList(rows: 3),
+        if (comments.error != null && items.isEmpty) ErrorView(error: comments.error!, onRetry: comments.loadFirstPage),
         if (comments.isEmpty) const Text(AppMessages.noComments),
-        for (final comment in comments.items)
-          CommentTile(comment: comment, onDelete: canDelete(comment) ? () => _delete(context, comment) : null),
+        for (var index = 0; index < items.length; index++)
+          FadeSlideIn(key: ValueKey(items[index].id), index: index, child: CommentThread(comment: items[index], list: comments)),
         if (comments.hasMore)
           Center(
-            child: TextButton(
-              onPressed: comments.isLoadingMore ? null : comments.loadNextPage,
-              child: const Text(AppMessages.loadMore),
-            ),
+            child: TextButton(onPressed: comments.isLoadingMore ? null : comments.loadNextPage, child: const Text(AppMessages.loadMore)),
           ),
       ],
     );

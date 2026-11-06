@@ -15,6 +15,8 @@ class Video with BaseModel {
     required this.viewsCount,
     required this.isLiked,
     required this.createdAt,
+    this.thumbnailUrl,
+    this.durationSeconds,
   });
 
   factory Video.fromJson(JsonMap json) => Video(
@@ -23,6 +25,8 @@ class Video with BaseModel {
         title: json['title'] as String,
         description: json['description'] as String? ?? '',
         videoUrl: json['videoUrl'] as String,
+        thumbnailUrl: json['thumbnailUrl'] as String?,
+        durationSeconds: (json['durationSeconds'] as num?)?.toDouble(),
         owner: PublicUser.fromJson(json['owner'] as JsonMap),
         likesCount: json['likesCount'] as int,
         commentsCount: json['commentsCount'] as int,
@@ -38,6 +42,8 @@ class Video with BaseModel {
   final String title;
   final String description;
   final String videoUrl;
+  final String? thumbnailUrl;
+  final double? durationSeconds;
   final PublicUser owner;
   final int likesCount;
   final int commentsCount;
@@ -46,12 +52,14 @@ class Video with BaseModel {
   @override
   final DateTime createdAt;
 
-  Video copyWith({bool? isLiked, int? likesCount, int? commentsCount, int? viewsCount}) => Video(
+  Video copyWith({bool? isLiked, int? likesCount, int? commentsCount, int? viewsCount, String? title, String? description}) => Video(
         id: id,
         code: code,
-        title: title,
-        description: description,
+        title: title ?? this.title,
+        description: description ?? this.description,
         videoUrl: videoUrl,
+        thumbnailUrl: thumbnailUrl,
+        durationSeconds: durationSeconds,
         owner: owner,
         likesCount: likesCount ?? this.likesCount,
         commentsCount: commentsCount ?? this.commentsCount,

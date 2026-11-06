@@ -1,4 +1,3 @@
-import 'package:videos_waves_mobile/dtos/videos/video/picked_video_dto.dart';
 import 'package:videos_waves_mobile/dtos/videos/video/video_query_dto.dart';
 import 'package:videos_waves_mobile/interfaces/services/videos/video/video_service_interface.dart';
 import 'package:videos_waves_mobile/models/common/pagination/page_meta.dart';
@@ -54,12 +53,17 @@ class FakeVideoService implements VideoServiceInterface {
   @override
   Future<void> recordView(String videoId) async {}
 
+  final List<String> createdTitles = [];
+
   @override
-  Future<Video> upload({
-    required PickedVideoDto file,
-    required String title,
-    required String description,
-    required void Function(double progress) onProgress,
-  }) async =>
-      buildVideo('uploaded');
+  Future<Video> create({required String mediaId, required String title, required String description}) async {
+    createdTitles.add(title);
+    return buildVideo(mediaId);
+  }
+
+  @override
+  Future<Video> update(String videoId, {required String title, required String description}) async => buildVideo(videoId);
+
+  @override
+  Future<void> remove(String videoId) async {}
 }

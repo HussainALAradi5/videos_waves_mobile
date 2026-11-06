@@ -1,0 +1,1 @@
+enum SettingControl { toggle, choice }

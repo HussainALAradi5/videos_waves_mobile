@@ -6,10 +6,13 @@ import '../../../constants/common/messages_constants.dart';
 import '../../../constants/common/routes_constants.dart';
 import '../../../controllers/users/auth/auth_controller.dart';
 import '../../../dtos/users/auth/register_request_dto.dart';
+import '../../../enums/users/user/gender.dart';
+import '../../../models/common/ui/dropdown_option.dart';
 import '../../../utilities/ui/feedback_utility.dart';
 import '../../../validations/users/auth/auth_validation.dart';
 import '../../../widgets/common/forms/app_text_field.dart';
 import '../../../widgets/common/forms/submit_button.dart';
+import '../../../widgets/common/tabs/segmented_tabs.dart';
 import '../../../widgets/users/auth/auth_form_card.dart';
 
 /// Registration signs the user in, then opens the feed.
@@ -25,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _userName = TextEditingController();
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  Gender _gender = Gender.male;
 
   @override
   void dispose() {
@@ -38,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthController>();
     final router = GoRouter.of(context);
-    final dto = RegisterRequestDto(userName: _userName.text.trim(), email: _email.text.trim(), password: _password.text);
+    final dto = RegisterRequestDto(userName: _userName.text.trim(), email: _email.text.trim(), password: _password.text, gender: _gender);
     if (await runWithFeedback(context, () => auth.register(dto))) router.go(AppRoutes.feed);
   }
 
@@ -74,6 +78,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
               validator: validatePassword,
               onSubmitted: (_) => _submit(),
             ),
+            Row(children: [
+              const Text(AppMessages.genderLabel),
+              const SizedBox(width: 12),
+              Expanded(
+                child: SegmentedTabs<Gender>(
+                  options: const [
+                    DropdownOption(value: Gender.male, label: AppMessages.male),
+                    DropdownOption(value: Gender.female, label: AppMessages.female),
+                  ],
+                  value: _gender,
+                  onChanged: (value) => setState(() => _gender = value),
+                ),
+              ),
+            ]),
             SubmitButton(label: AppMessages.registerSubmit, isLoading: isSubmitting, onPressed: _submit),
           ],
           footer: TextButton(

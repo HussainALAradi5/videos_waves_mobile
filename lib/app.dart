@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'config/routes/app_router.dart';
 import 'config/theme/app_theme.dart';
 import 'constants/common/messages_constants.dart';
+import 'controllers/users/settings/settings_controller.dart';
 import 'controllers/videos/video/video_feed_controller.dart';
 import 'globals/app_dependencies.dart';
 
@@ -48,15 +49,20 @@ class _VideosWavesAppState extends State<VideosWavesApp> {
       providers: [
         Provider.value(value: dependencies),
         ChangeNotifierProvider.value(value: dependencies.authController),
+        ChangeNotifierProvider.value(value: dependencies.settingsController),
+        ChangeNotifierProvider.value(value: dependencies.chatSocketController),
         ChangeNotifierProvider(create: (_) => VideoFeedController(dependencies.videoService)..loadFirstPage()),
       ],
-      child: MaterialApp.router(
-        title: AppMessages.appName,
-        debugShowCheckedModeBanner: false,
-        scaffoldMessengerKey: _messengerKey,
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
-        routerConfig: _router,
+      child: Consumer<SettingsController>(
+        builder: (context, settings, _) => MaterialApp.router(
+          title: AppMessages.appName,
+          debugShowCheckedModeBanner: false,
+          scaffoldMessengerKey: _messengerKey,
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: settings.themeMode,
+          routerConfig: _router,
+        ),
       ),
     );
   }

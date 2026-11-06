@@ -84,6 +84,16 @@ class ProfileActions extends StatelessWidget {
             icon: Icons.do_not_disturb_on_outlined,
             onSelected: () => runWithFeedback(context, () => controller.setRestricted(!profile.isRestricted)),
           ),
+          if (isAdmin)
+            ActionItem(
+              label: profile.role == Role.admin ? AdminUsersMessages.removeAdmin : AdminUsersMessages.makeAdmin,
+              icon: profile.role == Role.admin ? Icons.remove_moderator_outlined : Icons.add_moderator_outlined,
+              onSelected: () => runWithFeedback(
+                context,
+                () => controller.setRole(profile.role == Role.admin ? Role.user : Role.admin),
+                successMessage: AdminUsersMessages.roleChanged(profile.user.userName, isAdmin: profile.role != Role.admin),
+              ),
+            ),
           if (isAdmin && profile.role != Role.admin)
             ActionItem(
               label: profile.isActive ? AdminUsersMessages.deactivate : AdminUsersMessages.activate,

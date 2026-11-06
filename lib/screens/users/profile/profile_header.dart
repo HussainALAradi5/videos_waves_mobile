@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constants/users/roles/role_constants.dart';
 import '../../../constants/common/ui_constants.dart';
 import '../../../constants/users/admin_users/admin_users_constants.dart';
 import '../../../constants/users/social/social_messages_constants.dart';
@@ -49,6 +50,8 @@ class ProfileHeader extends StatelessWidget {
         const SizedBox(height: Spacing.sm),
         Row(children: [
           Text(userName, style: const TextStyle(fontWeight: FontWeight.w700)),
+          const SizedBox(width: Spacing.sm),
+          StatusChip(option: roleOptions[profile.role]!),
           if (profile.followsYou && !profile.isMe) ...[const SizedBox(width: Spacing.sm), Text(SocialMessages.followsYou, style: muted)],
           if (!profile.isActive) ...[const SizedBox(width: Spacing.sm), StatusChip(option: accountStatusOptions[AccountStatus.inactive]!)],
         ]),

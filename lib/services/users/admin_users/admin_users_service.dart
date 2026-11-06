@@ -25,4 +25,7 @@ class AdminUsersService {
 
   Future<User> setActive(String userName, {required bool isActive}) =>
       _client.patch(UserEndpoints.status(userName), User.fromJson, body: {'isActive': isActive});
+
+  /// Admins only, never your own account; the person is signed out so the new role applies.
+  Future<User> setRole(String userName, Role role) => _client.patch(UserEndpoints.role(userName), User.fromJson, body: {'role': role.wireValue});
 }

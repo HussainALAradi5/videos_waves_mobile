@@ -18,4 +18,5 @@ class UserEndpoints {
   static String block(String userName) => '${profile(userName)}/block';
   static String restrict(String userName) => '${profile(userName)}/restrict';
   static String status(String userName) => '${profile(userName)}/status';
+  static String role(String userName) => '${profile(userName)}/role';
 }

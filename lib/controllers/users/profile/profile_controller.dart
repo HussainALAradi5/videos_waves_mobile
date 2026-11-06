@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../enums/users/roles/role.dart';
 import '../../../models/users/profile/profile.dart';
 import '../../../services/api/api_client.dart';
 import '../../../services/users/admin_users/admin_users_service.dart';
@@ -54,6 +55,12 @@ class ProfileController extends ChangeNotifier {
   /// Blocking also ends follows both ways, so the profile is reloaded afterwards.
   Future<void> setBlocked(bool isBlocked) async {
     await _social.setBlocked(userName, isBlocked: isBlocked);
+    await load();
+  }
+
+  /// Admins only; the profile reloads to show the new role.
+  Future<void> setRole(Role role) async {
+    await AdminUsersService(_client).setRole(userName, role);
     await load();
   }
 

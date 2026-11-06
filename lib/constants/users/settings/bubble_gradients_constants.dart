@@ -7,7 +7,7 @@ class BubbleGradients {
   const BubbleGradients._();
 
   static const Map<BubbleColor, List<Color>> colors = {
-    BubbleColor.wave: [Color(0xFF22B8FF), Color(0xFF7B61FF)],
+    BubbleColor.wave: [Color(0xFF3A7BB5), Color(0xFF1F4E79)],
     BubbleColor.ocean: [Color(0xFF0A9DF0), Color(0xFF0F64A8)],
     BubbleColor.sunset: [Color(0xFFFF7A9C), Color(0xFFFF9F43)],
     BubbleColor.forest: [Color(0xFF1FB88A), Color(0xFF0F7A5C)],

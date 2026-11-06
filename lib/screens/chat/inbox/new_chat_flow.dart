@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constants/chat/chat_messages_constants.dart';
+import '../../../constants/users/social/social_messages_constants.dart';
+import '../../../utilities/users/contact_utility.dart';
 import '../../../constants/common/messages_constants.dart';
 import '../../../constants/common/limits_constants.dart';
 import '../../../dtos/common/pagination/page_request_dto.dart';
@@ -21,7 +23,9 @@ Future<void> startNewChat(BuildContext context) async {
     MultiSelectSheet<String>(
       title: ChatMessages.pickPeople,
       confirmLabel: ChatMessages.start,
+      hint: SocialMessages.searchHint,
       search: (text) async {
+        if (!isContactQuery(text)) return const [];
         final page = await dependencies.socialService.search(text, const PageRequestDto(page: 1, pageSize: PageSizes.users));
         return [
           for (final summary in page.items)

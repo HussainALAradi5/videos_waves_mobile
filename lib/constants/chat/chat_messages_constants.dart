@@ -7,7 +7,7 @@ class ChatMessages {
   static const String groups = 'Groups';
   static const String unread = 'Unread';
   static const String newMessage = 'New message';
-  static const String pickPeople = 'Pick people to message';
+  static const String pickPeople = 'Find people by email or phone';
   static const String start = 'Chat';
   static const String groupName = 'Group name';
   static const String createGroup = 'Create group';

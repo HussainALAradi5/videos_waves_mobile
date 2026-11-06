@@ -19,12 +19,13 @@ import '../../../widgets/users/admin_users/admin_user_tile.dart';
 
 final List<DropdownOption<Role?>> _roles = [
   const DropdownOption(value: null, label: AdminUsersMessages.allRoles),
-  for (final role in Role.values) DropdownOption(value: role, label: roleOptions[role]!.label),
+  for (final role in Role.values) DropdownOption(value: role, label: roleOptions[role]!.label, badge: roleOptions[role]),
 ];
 
 final List<DropdownOption<AccountStatus?>> _statuses = [
   const DropdownOption(value: null, label: AdminUsersMessages.allStatuses),
-  for (final status in AccountStatus.values) DropdownOption(value: status, label: accountStatusOptions[status]!.label),
+  for (final status in AccountStatus.values)
+    DropdownOption(value: status, label: accountStatusOptions[status]!.label, badge: accountStatusOptions[status]),
 ];
 
 /// Admins only (the route guard sends everyone else away).

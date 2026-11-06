@@ -5,7 +5,7 @@ import '../../../models/common/ui/dropdown_option.dart';
 
 /// A searchable multi-select in a bottom sheet with chips for the choices so far.
 class MultiSelectSheet<T> extends StatefulWidget {
-  const MultiSelectSheet({super.key, required this.title, required this.search, required this.confirmLabel, this.initial = const []});
+  const MultiSelectSheet({super.key, required this.title, required this.search, required this.confirmLabel, this.initial = const [], this.hint});
 
   final String title;
   final String confirmLabel;
@@ -13,6 +13,7 @@ class MultiSelectSheet<T> extends StatefulWidget {
   /// Server search for options matching the text.
   final Future<List<DropdownOption<T>>> Function(String text) search;
   final List<DropdownOption<T>> initial;
+  final String? hint;
 
   static Future<List<DropdownOption<T>>?> show<T>(BuildContext context, MultiSelectSheet<T> sheet) =>
       showModalBottomSheet<List<DropdownOption<T>>>(context: context, isScrollControlled: true, showDragHandle: true, builder: (_) => sheet);
@@ -50,7 +51,7 @@ class _MultiSelectSheetState<T> extends State<MultiSelectSheet<T>> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text(widget.title, style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: Spacing.sm),
-          TextField(decoration: const InputDecoration(prefixIcon: Icon(Icons.search)), onChanged: _query),
+          TextField(decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: widget.hint), onChanged: _query),
           const SizedBox(height: Spacing.sm),
           Wrap(spacing: Spacing.sm, children: [
             for (final option in _selected) InputChip(label: Text(option.label), avatar: option.leading, onDeleted: () => _toggle(option)),

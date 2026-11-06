@@ -10,6 +10,7 @@ import '../../../enums/common/button_tone.dart';
 import '../../../globals/app_dependencies.dart';
 import '../../../utilities/media/file_pick_utility.dart';
 import '../../../utilities/ui/feedback_utility.dart';
+import '../../../validations/users/auth/auth_validation.dart';
 import '../../../widgets/common/avatars/user_avatar.dart';
 import '../../../widgets/common/buttons/app_button.dart';
 import '../../../widgets/common/feedback/app_progress_bar.dart';
@@ -28,11 +29,14 @@ class _AccountSectionState extends State<AccountSection> {
     return AccountController(dependencies.settingsService, dependencies.mediaUploadService, dependencies.authController);
   }();
   late final TextEditingController _bio = TextEditingController(text: context.read<AuthController>().user?.bio);
+  late final TextEditingController _phone = TextEditingController(text: context.read<AuthController>().user?.phone);
+  final GlobalKey<FormState> _form = GlobalKey<FormState>();
 
   @override
   void dispose() {
     _account.dispose();
     _bio.dispose();
+    _phone.dispose();
     super.dispose();
   }
 
@@ -68,13 +72,28 @@ class _AccountSectionState extends State<AccountSection> {
         ]),
         if (_account.isSaving && _account.avatarProgress > 0) AppProgressBar(value: _account.avatarProgress),
         const SizedBox(height: Spacing.sm),
-        TextField(controller: _bio, maxLength: 150, maxLines: 3, minLines: 1, decoration: const InputDecoration(labelText: SettingsMessages.bioLabel)),
+        Form(
+          key: _form,
+          child: Column(children: [
+            TextField(controller: _bio, maxLength: 150, maxLines: 3, minLines: 1, decoration: const InputDecoration(labelText: SettingsMessages.bioLabel)),
+            TextFormField(
+              controller: _phone,
+              keyboardType: TextInputType.phone,
+              validator: validatePhone,
+              decoration: const InputDecoration(labelText: SettingsMessages.phoneLabel, helperText: SettingsMessages.phoneHelp),
+            ),
+          ]),
+        ),
+        const SizedBox(height: Spacing.sm),
         Align(
           alignment: Alignment.centerRight,
           child: AppButton(
             label: SettingsMessages.saveBio,
             tone: ButtonTone.secondary,
-            onPressed: () => runWithFeedback(context, () => _account.updateBio(_bio.text), successMessage: SettingsMessages.bioSaved),
+            onPressed: () async {
+              if (!_form.currentState!.validate()) return;
+              await runWithFeedback(context, () => _account.updateDetails(bio: _bio.text, phone: _phone.text), successMessage: SettingsMessages.bioSaved);
+            },
           ),
         ),
       ]),

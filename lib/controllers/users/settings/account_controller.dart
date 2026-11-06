@@ -27,7 +27,10 @@ class AccountController extends ChangeNotifier {
   /// Back to the standard picture for the user's gender.
   Future<void> removeAvatar() => _run(() async => _auth.updateUser(await _settings.updateAvatar(null)));
 
-  Future<void> updateBio(String bio) => _run(() async => _auth.updateUser(await _settings.updateProfile({'bio': bio.trim()})));
+  /// An empty phone removes the number.
+  Future<void> updateDetails({required String bio, required String phone}) => _run(() async => _auth.updateUser(
+        await _settings.updateProfile({'bio': bio.trim(), 'phone': phone.trim().isEmpty ? null : phone.trim()}),
+      ));
 
   Future<void> _run(Future<void> Function() action) async {
     isSaving = true;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../constants/common/motion_constants.dart';
 import '../../../constants/common/radii_constants.dart';
 import '../../../models/common/ui/dropdown_option.dart';
+import '../badges/status_chip.dart';
 
 /// A custom dropdown: a pill trigger and a menu that scales and fades in under it.
 class AppDropdown<T> extends StatelessWidget {
@@ -28,7 +29,7 @@ class AppDropdown<T> extends StatelessWidget {
             value: option.value,
             child: Row(children: [
               if (option.leading != null) ...[option.leading!, const SizedBox(width: 10)],
-              Expanded(child: Text(option.label)),
+              Expanded(child: option.badge == null ? Text(option.label) : Align(alignment: Alignment.centerLeft, child: StatusChip(option: option.badge!))),
               if (option.value == value) Icon(Icons.check, size: 18, color: scheme.primary),
             ]),
           ),
@@ -37,7 +38,7 @@ class AppDropdown<T> extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         decoration: BoxDecoration(color: scheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(Radii.pill)),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(selected.label, style: const TextStyle(fontWeight: FontWeight.w600)),
+          if (selected.badge == null) Text(selected.label, style: const TextStyle(fontWeight: FontWeight.w600)) else StatusChip(option: selected.badge!),
           const SizedBox(width: 4),
           const Icon(Icons.expand_more, size: 18),
         ]),

@@ -27,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _userName = TextEditingController();
   final TextEditingController _email = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
   final TextEditingController _password = TextEditingController();
   Gender _gender = Gender.male;
 
@@ -34,6 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     _userName.dispose();
     _email.dispose();
+    _phone.dispose();
     _password.dispose();
     super.dispose();
   }
@@ -42,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthController>();
     final router = GoRouter.of(context);
-    final dto = RegisterRequestDto(userName: _userName.text.trim(), email: _email.text.trim(), password: _password.text, gender: _gender);
+    final dto = RegisterRequestDto(userName: _userName.text.trim(), email: _email.text.trim(), password: _password.text, gender: _gender, phone: _phone.text.trim());
     if (await runWithFeedback(context, () => auth.register(dto))) router.go(AppRoutes.feed);
   }
 
@@ -68,6 +70,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
               keyboardType: TextInputType.emailAddress,
               autofillHints: const [AutofillHints.email],
               validator: validateEmail,
+            ),
+            AppTextField(
+              controller: _phone,
+              label: AppMessages.phoneLabel,
+              keyboardType: TextInputType.phone,
+              autofillHints: const [AutofillHints.telephoneNumber],
+              validator: validatePhone,
             ),
             AppTextField(
               controller: _password,

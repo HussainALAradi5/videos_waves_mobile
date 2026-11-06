@@ -66,7 +66,8 @@ class _CommentItemState extends State<CommentItem> {
     final user = context.watch<AuthController>().user;
     final videoOwnerId = context.select<VideoDetailsController, String?>((details) => details.video?.owner.id);
     final isAuthor = user?.id == comment.author.id;
-    final canDelete = isAuthor || (user?.isAdmin ?? false);
+    // The author, the video owner (their own post), or an admin, as on the server.
+    final canDelete = isAuthor || (user != null && user.id == videoOwnerId) || (user?.isAdmin ?? false);
     if (_isEditing) {
       return InlineEditor(
         initial: comment.content,

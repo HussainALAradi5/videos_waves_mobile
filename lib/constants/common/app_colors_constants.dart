@@ -10,6 +10,8 @@ class AppColors {
   static const Color brandEnd = Color(0xFF1F4E79);
   static const Color like = Color(0xFFFF5C8A);
   static const Color online = Color(0xFF22C55E);
+  static const Color away = Color(0xFFF59E0B);
+  static const Color busy = Color(0xFFEF4444);
   static const Color pending = Color(0xFFD69E2E);
   static const Color accepted = Color(0xFF38A169);
   static const Color rejected = Color(0xFFE53E3E);

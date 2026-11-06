@@ -9,5 +9,6 @@ class ChatEvents {
   static const String conversationRead = 'conversation:read';
   static const String typing = 'typing';
   static const String presence = 'presence';
+  static const String notificationNew = 'notification:new';
   static const String socketPath = '/socket.io';
 }

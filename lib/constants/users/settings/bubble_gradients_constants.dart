@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../enums/users/settings/bubble_color.dart';
 
-/// Background of your own chat bubbles per colour setting (same as the web app).
+/// Background of chat bubbles per colour setting (same as the web app).
 class BubbleGradients {
   const BubbleGradients._();
 
@@ -12,6 +12,8 @@ class BubbleGradients {
     BubbleColor.sunset: [Color(0xFFFF7A9C), Color(0xFFFF9F43)],
     BubbleColor.forest: [Color(0xFF1FB88A), Color(0xFF0F7A5C)],
     BubbleColor.mono: [Color(0xFF3F4656), Color(0xFF1F2430)],
+    // Swatch only: neutral bubbles use the theme surface, so they suit light and dark.
+    BubbleColor.neutral: [Color(0xFFEEF1F6), Color(0xFFC9D2DF)],
   };
 
   static LinearGradient of(BubbleColor color) => LinearGradient(colors: colors[color]!);

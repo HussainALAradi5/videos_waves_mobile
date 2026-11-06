@@ -30,13 +30,25 @@ class ProfileController extends ChangeNotifier {
     }
   }
 
+  /// Follow, or for a private account send a request; tapping again unfollows or cancels the request.
   Future<void> toggleFollow() {
     final current = profile!;
-    final next = !current.isFollowing;
+    final follow = !(current.isFollowing || current.isRequested);
+    final becomesFollower = follow && !current.isPrivate;
     return _optimistic(
-      current.copyWith(isFollowing: next, followersCount: current.followersCount + (next ? 1 : -1)),
-      () => _social.setFollowing(userName, isFollowing: next),
+      current.copyWith(
+        isFollowing: becomesFollower,
+        isRequested: follow && current.isPrivate,
+        followersCount: current.followersCount + (becomesFollower ? 1 : (current.isFollowing ? -1 : 0)),
+      ),
+      () => _social.setFollowing(userName, isFollowing: follow),
     );
+  }
+
+  /// Accept or decline their request to follow your private account, then refresh.
+  Future<void> answerRequest({required bool accept}) async {
+    accept ? await _social.acceptRequest(userName) : await _social.declineRequest(userName);
+    await load();
   }
 
   /// Blocking also ends follows both ways, so the profile is reloaded afterwards.

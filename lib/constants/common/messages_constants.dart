@@ -2,6 +2,10 @@ class AppMessages {
   const AppMessages._();
 
   static const String appName = 'Videos Waves';
+  static const String backHome = 'Back to home';
+  static const String invalidPage = 'That page does not exist, so we brought you home.';
+  static const String lightMode = 'Switch to light mode';
+  static const String darkMode = 'Switch to dark mode';
   static const String unexpectedError = 'Something went wrong. Please try again.';
   static const String networkError = 'Cannot reach the server. Check your connection.';
   static const String retry = 'Try again';

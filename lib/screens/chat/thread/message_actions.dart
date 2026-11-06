@@ -8,12 +8,17 @@ import '../../../constants/common/ui_constants.dart';
 import '../../../controllers/chat/thread/thread_controller.dart';
 import '../../../enums/chat/message/message_kind.dart';
 import '../../../models/chat/message/message.dart';
+import '../../../utilities/chat/conversation_utility.dart';
 import '../../../utilities/ui/feedback_utility.dart';
 
-/// Long-press sheet: the emoji bar, then Reply, Copy, Edit (15 minutes), Unsend, and Delete for me.
+/// Long-press sheet: the emoji bar, then Reply, Copy, Edit (15 minutes), Unsend (until seen), and Delete for me.
 Future<void> showMessageActions(BuildContext context, ThreadController thread, Message message) async {
   if (message.isUnsent) return;
+  // Keep the keyboard closed: otherwise focus returns to the composer when the sheet closes.
+  FocusManager.instance.primaryFocus?.unfocus();
   final isMine = message.sender.id == thread.myUserId;
+  // Unsend only until someone else has read it (the server enforces the same rule).
+  final canUnsend = isMine && countSeenBy(message, thread.conversation?.members ?? const []) == 0;
   final canEdit = isMine && message.kind == MessageKind.text && DateTime.now().difference(message.createdAt) < MessageLimits.editWindow;
   final action = await showModalBottomSheet<String>(
     context: context,
@@ -42,7 +47,7 @@ Future<void> showMessageActions(BuildContext context, ThreadController thread, M
           tile('reply', Icons.reply, ChatMessages.reply),
           if (message.body != null) tile('copy', Icons.copy, ChatMessages.copy),
           if (canEdit) tile('edit', Icons.edit_outlined, ChatMessages.edit),
-          if (isMine) tile('unsend', Icons.undo, ChatMessages.unsend, isDanger: true),
+          if (canUnsend) tile('unsend', Icons.undo, ChatMessages.unsend, isDanger: true),
           tile('delete', Icons.delete_outline, ChatMessages.deleteForMe, isDanger: true),
         ]),
       );
@@ -60,7 +65,7 @@ Future<void> showMessageActions(BuildContext context, ThreadController thread, M
     final body = await _askEdit(context, message.body ?? '');
     if (body != null && context.mounted) await runWithFeedback(context, () => thread.edit(message, body));
   } else if (action == 'unsend') {
-    await runWithFeedback(context, () => thread.unsend(message));
+    thread.unsend(message);
   } else if (action == 'delete') {
     await runWithFeedback(context, () => thread.deleteForMe(message));
   }

@@ -29,14 +29,16 @@ class UserListController extends PagedListController<UserSummary> {
     });
   }
 
+  /// The server answers with the real state (a private account gives Requested, not Following).
   Future<void> toggleFollow(UserSummary summary) async {
-    final next = !summary.isFollowing;
+    final follow = !(summary.isFollowing || summary.isRequested);
     bool isSame(UserSummary item) => item.user.id == summary.user.id;
-    replaceWhere(isSame, (item) => item.copyWith(isFollowing: next));
+    replaceWhere(isSame, (item) => item.copyWith(isFollowing: follow, isRequested: false));
     try {
-      await _social.setFollowing(summary.user.userName, isFollowing: next);
+      final state = await _social.setFollowing(summary.user.userName, isFollowing: follow);
+      replaceWhere(isSame, (item) => item.copyWith(isFollowing: state['isFollowing'] as bool? ?? follow, isRequested: state['isRequested'] as bool? ?? false));
     } catch (_) {
-      replaceWhere(isSame, (item) => item.copyWith(isFollowing: !next));
+      replaceWhere(isSame, (item) => item.copyWith(isFollowing: summary.isFollowing, isRequested: summary.isRequested));
       rethrow;
     }
   }

@@ -24,7 +24,7 @@ class ConversationTile extends StatelessWidget {
     final muted = Theme.of(context).textTheme.bodySmall;
     final avatar = conversation.isGroup || partner == null
         ? const CircleAvatar(radius: 26, child: DecoratedBox(decoration: BoxDecoration(gradient: AppGradients.brand, shape: BoxShape.circle), child: SizedBox.expand(child: Icon(Icons.groups, color: Colors.white))))
-        : UserAvatar(user: partner.user, size: 52, isOnline: partner.isOnline);
+        : UserAvatar(user: partner.user, size: 52, isOnline: partner.isOnline, presence: partner.presence);
     final subtitle = conversation.lastPreview ?? (conversation.isGroup ? ChatMessages.members(conversation.membersCount + 1) : '');
     return ListTile(
       onTap: onTap,

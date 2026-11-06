@@ -16,9 +16,21 @@ extension ThreadMessageActions on ThreadController {
 
   Future<void> edit(Message message, String body) async => replace(await _messages.edit(conversationId, message.id, body.trim()));
 
-  Future<void> unsend(Message message) async {
-    await _messages.remove(conversationId, message.id, DeleteScope.everyone);
+  /// Shows it as unsent at once and offers Undo; the server is asked only after [MessageLimits.unsendUndo].
+  void unsend(Message message) {
     replace(message.copyWith(isUnsent: true));
+    final timer = Timer(MessageLimits.unsendUndo, () async {
+      try {
+        await _messages.remove(conversationId, message.id, DeleteScope.everyone);
+      } catch (error) {
+        replace(message);
+        showToast(ToastType.error, errorMessageOf(error));
+      }
+    });
+    showUndoToast(ChatMessages.unsent, () {
+      timer.cancel();
+      replace(message);
+    }, duration: MessageLimits.unsendUndo, isPausable: false);
   }
 
   Future<void> deleteForMe(Message message) async {

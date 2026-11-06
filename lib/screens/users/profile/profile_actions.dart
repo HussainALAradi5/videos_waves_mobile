@@ -66,6 +66,7 @@ class ProfileActions extends StatelessWidget {
         Expanded(
           child: FollowButton(
             isFollowing: profile.isFollowing,
+            isRequested: profile.isRequested,
             followsYou: profile.followsYou,
             onPressed: () => requireSignIn(() => runWithFeedback(context, controller.toggleFollow)),
           ),

@@ -13,6 +13,7 @@ import '../../../widgets/common/feedback/empty_view.dart';
 import '../../../widgets/common/feedback/error_view.dart';
 import '../../../widgets/common/feedback/loading_view.dart';
 import '../../../widgets/common/layout/constrained_content.dart';
+import 'follow_request_banner.dart';
 import 'profile_header.dart';
 import 'profile_videos_grid.dart';
 
@@ -59,7 +60,17 @@ class _ProfileBody extends StatelessWidget {
         onRefresh: controller.load,
         child: CustomScrollView(slivers: [
           SliverToBoxAdapter(child: ProfileHeader(profile: profile)),
-          if (!profile.isBlocked) ProfileVideosGrid(key: ValueKey(profile.user.id), ownerId: profile.user.id),
+          const SliverToBoxAdapter(child: FollowRequestBanner()),
+          if (!profile.isBlocked && profile.canViewContent) ProfileVideosGrid(key: ValueKey(profile.user.id), ownerId: profile.user.id),
+          if (!profile.isBlocked && !profile.canViewContent)
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: EmptyView(
+                title: SocialMessages.privateTitle,
+                message: profile.isRequested ? SocialMessages.privateRequestedHint : SocialMessages.privateHint,
+                icon: Icons.lock_outline,
+              ),
+            ),
         ]),
       );
     }

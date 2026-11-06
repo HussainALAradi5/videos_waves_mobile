@@ -3,6 +3,13 @@ class SocialMessages {
 
   static const String follow = 'Follow';
   static const String followBack = 'Follow back';
+  static const String requested = 'Requested';
+  static const String privateTitle = 'This account is private';
+  static const String privateHint = 'Follow this account to see their videos.';
+  static const String privateRequestedHint = 'Your request is waiting for them to accept it.';
+  static String wantsToFollow(String name) => '$name wants to follow you';
+  static const String accept = 'Accept';
+  static const String decline = 'Decline';
   static const String followingLabel = 'Following';
   static const String followsYou = 'Follows you';
   static const String followers = 'Followers';

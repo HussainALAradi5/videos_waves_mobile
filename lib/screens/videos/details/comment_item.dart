@@ -9,6 +9,7 @@ import '../../../controllers/videos/video/video_details_controller.dart';
 import '../../../models/common/ui/action_item.dart';
 import '../../../models/videos/comment/comment.dart';
 import '../../../utilities/errors/api_exception.dart';
+import '../../../enums/common/toast_type.dart';
 import '../../../utilities/ui/feedback_utility.dart';
 import '../../../utilities/ui/undo_snackbar_utility.dart';
 import '../../../widgets/common/forms/inline_editor.dart';
@@ -36,7 +37,6 @@ class _CommentItemState extends State<CommentItem> {
   Future<void> _delete() async {
     final comment = widget.comment;
     final details = context.read<VideoDetailsController>();
-    final messenger = ScaffoldMessenger.of(context);
     final list = widget.list;
     final parent = widget.parent;
     void adjust(int delta) {
@@ -47,16 +47,16 @@ class _CommentItemState extends State<CommentItem> {
     try {
       final index = await list.remove(comment);
       adjust(-1);
-      showUndoSnackBar(messenger, CommentMessages.deleted, () async {
+      showUndoToast(CommentMessages.deleted, () async {
         try {
           await list.restore(comment, index);
           adjust(1);
         } catch (error) {
-          messenger.showSnackBar(SnackBar(content: Text(errorMessageOf(error))));
+          showToast(ToastType.error, errorMessageOf(error));
         }
       });
     } catch (error) {
-      messenger.showSnackBar(SnackBar(content: Text(errorMessageOf(error))));
+      showToast(ToastType.error, errorMessageOf(error));
     }
   }
 

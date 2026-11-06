@@ -1,10 +1,11 @@
-/// The colour of your own chat bubbles.
+/// The colour of chat bubbles (yours and, separately, theirs).
 enum BubbleColor {
   wave('wave'),
   ocean('ocean'),
   sunset('sunset'),
   forest('forest'),
-  mono('mono');
+  mono('mono'),
+  neutral('neutral');
 
   const BubbleColor(this.wire);
 

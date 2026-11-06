@@ -1,3 +1,4 @@
+import '../../../enums/chat/conversation/chat_background.dart';
 import '../../../enums/chat/conversation/conversation_type.dart';
 import '../../../enums/chat/conversation/member_role.dart';
 import '../../../enums/chat/conversation/member_status.dart';
@@ -17,6 +18,7 @@ class Conversation with BaseModel {
     required this.unreadCount,
     required this.isMuted,
     required this.createdAt,
+    this.background = ChatBackground.none,
     this.title,
     this.lastPreview,
     this.lastSenderId,
@@ -37,6 +39,7 @@ class Conversation with BaseModel {
       myStatus: MemberStatus.fromWire(me['status'] as String),
       unreadCount: me['unreadCount'] as int,
       isMuted: me['isMuted'] as bool,
+      background: ChatBackground.fromWire(me['background'] as String?),
       lastPreview: last?['preview'] as String?,
       lastSenderId: last?['senderId'] as String?,
       lastMessageAt: json['lastMessageAt'] == null ? null : DateTime.parse(json['lastMessageAt'] as String),
@@ -58,6 +61,9 @@ class Conversation with BaseModel {
   final MemberStatus myStatus;
   final int unreadCount;
   final bool isMuted;
+
+  /// Your own wallpaper for this chat; nobody else sees it.
+  final ChatBackground background;
   final String? lastPreview;
   final String? lastSenderId;
   final DateTime? lastMessageAt;
@@ -82,6 +88,7 @@ class Conversation with BaseModel {
         myStatus: myStatus ?? this.myStatus,
         unreadCount: unreadCount ?? this.unreadCount,
         isMuted: isMuted ?? this.isMuted,
+        background: background,
         createdAt: createdAt,
         lastPreview: lastPreview,
         lastSenderId: lastSenderId,

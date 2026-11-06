@@ -4,15 +4,17 @@ import 'package:provider/provider.dart';
 import '../../../constants/chat/chat_messages_constants.dart';
 import '../../../constants/common/ui_constants.dart';
 import '../../../controllers/chat/thread/thread_controller.dart';
+import '../../../enums/chat/conversation/chat_background.dart';
 import '../../../utilities/chat/conversation_utility.dart';
 import '../../../utilities/format/formatters.dart';
 import '../../../widgets/chat/message/message_bubble.dart';
 import '../../../widgets/chat/message/system_notice.dart';
 import '../../../widgets/chat/message/typing_dots.dart';
+import '../../../widgets/chat/thread/chat_background_layer.dart';
 import '../../../widgets/common/waves/wave_loader.dart';
 import 'message_actions.dart';
 
-/// Newest at the bottom; scrolling up loads older messages. Shows day labels, typing, and Seen.
+/// Newest at the bottom on your wallpaper; scrolling up loads older messages. Shows day labels, ticks, typing, and Seen.
 class ThreadMessageList extends StatelessWidget {
   const ThreadMessageList({super.key});
 
@@ -25,7 +27,9 @@ class ThreadMessageList extends StatelessWidget {
     final lastMineIndex = messages.indexWhere((message) => message.sender.id == thread.myUserId && !message.isSystem);
     final hasTyping = thread.typingUserIds.isNotEmpty;
     final offset = hasTyping ? 1 : 0;
-    return NotificationListener<ScrollNotification>(
+    return ChatBackgroundLayer(
+      background: thread.conversation?.background ?? ChatBackground.none,
+      child: NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification.metrics.extentAfter < 300) thread.loadOlder();
         return false;
@@ -57,6 +61,7 @@ class ThreadMessageList extends StatelessWidget {
                 showName: isGroup && !isMine && (older == null || older.sender.id != message.sender.id),
                 onLongPress: () => showMessageActions(context, thread, message),
                 onSwipeReply: () => thread.setReplyTo(message),
+                readState: isMine ? readStateOf(message, members) : null,
               ),
             if (seenCount > 0)
               Align(
@@ -65,6 +70,7 @@ class ThreadMessageList extends StatelessWidget {
               ),
           ]);
         },
+      ),
       ),
     );
   }

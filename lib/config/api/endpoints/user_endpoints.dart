@@ -7,6 +7,9 @@ class UserEndpoints {
   static const String meAvatar = '/users/me/avatar';
   static const String meSettings = '/users/me/settings';
   static const String search = '/users/search';
+  static const String meFollowRequests = '/users/me/follow-requests';
+
+  static String followRequest(String userName) => '$meFollowRequests/${Uri.encodeComponent(userName)}';
 
   static String profile(String userName) => '/users/${Uri.encodeComponent(userName)}';
   static String follow(String userName) => '${profile(userName)}/follow';

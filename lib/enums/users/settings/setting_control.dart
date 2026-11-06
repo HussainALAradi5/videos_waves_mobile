@@ -1,1 +1,1 @@
-enum SettingControl { toggle, choice }
+enum SettingControl { toggle, choice, swatches, text }

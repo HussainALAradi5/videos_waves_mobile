@@ -8,7 +8,9 @@ import '../services/api/api_client.dart';
 import '../services/chat/conversation/conversation_service.dart';
 import '../services/chat/message/message_service.dart';
 import '../services/media/media/media_upload_service.dart';
+import '../services/notifications/notification_service.dart';
 import '../services/realtime/socket_service.dart';
+import '../services/storage/preferences_storage.dart';
 import '../services/storage/token_storage.dart';
 import '../services/users/admin_request/admin_request_service.dart';
 import '../services/users/auth/auth_service.dart';
@@ -23,6 +25,7 @@ class AppDependencies {
     required this.authController,
     required this.settingsController,
     required this.chatSocketController,
+    required this.notificationService,
     required this.videoService,
     required this.commentService,
     required this.adminRequestService,
@@ -44,10 +47,13 @@ class AppDependencies {
     final settingsService = SettingsService(client);
     final conversationService = ConversationService(client);
     final socketService = SocketService(tokenStorage);
+    final notificationService = NotificationService(client);
+    final settingsController = SettingsController(settingsService, authController, PreferencesStorage());
     return AppDependencies._(
       authController: authController,
-      settingsController: SettingsController(settingsService, authController),
-      chatSocketController: ChatSocketController(authController, socketService, conversationService),
+      settingsController: settingsController,
+      chatSocketController: ChatSocketController(authController, socketService, conversationService, notificationService, settingsController),
+      notificationService: notificationService,
       videoService: VideoService(client),
       commentService: CommentService(client),
       adminRequestService: AdminRequestService(client),
@@ -64,6 +70,7 @@ class AppDependencies {
   final AuthController authController;
   final SettingsController settingsController;
   final ChatSocketController chatSocketController;
+  final NotificationService notificationService;
   final VideoServiceInterface videoService;
   final CommentServiceInterface commentService;
   final AdminRequestServiceInterface adminRequestService;

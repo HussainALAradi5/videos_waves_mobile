@@ -17,16 +17,18 @@ import '../../../widgets/common/lists/paged_list_view.dart';
 import '../../../widgets/common/motion/fade_slide_in.dart';
 import '../../../widgets/common/tabs/segmented_tabs.dart';
 import '../../../widgets/chat/options/chat_options_sheet.dart';
+import '../../../widgets/chat/conversation/status_menu_button.dart';
 import 'new_chat_flow.dart';
 
 const List<DropdownOption<InboxFolder>> _folders = [
-  DropdownOption(value: InboxFolder.inbox, label: ChatMessages.inbox),
-  DropdownOption(value: InboxFolder.requests, label: ChatMessages.requests),
-  DropdownOption(value: InboxFolder.groups, label: ChatMessages.groups),
+  DropdownOption(value: InboxFolder.inbox, label: ChatMessages.all),
   DropdownOption(value: InboxFolder.unread, label: ChatMessages.unread),
+  DropdownOption(value: InboxFolder.read, label: ChatMessages.read),
+  DropdownOption(value: InboxFolder.groups, label: ChatMessages.groups),
+  DropdownOption(value: InboxFolder.requests, label: ChatMessages.requests),
 ];
 
-/// The chat list with Inbox, Requests, Groups, and Unread folders.
+/// The chat list with All, Unread, Read, Groups, and Requests filters, and your status.
 class InboxScreen extends StatelessWidget {
   const InboxScreen({super.key});
 
@@ -59,15 +61,15 @@ class _InboxBody extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(ChatMessages.title, style: TextStyle(fontWeight: FontWeight.w700)),
-        actions: [IconButton(tooltip: ChatMessages.newMessage, icon: const Icon(Icons.edit_square), onPressed: () => startNewChat(context))],
+        actions: [
+          const StatusMenuButton(),
+          IconButton(tooltip: ChatMessages.newMessage, icon: const Icon(Icons.edit_square), onPressed: () => startNewChat(context)),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(56),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(Spacing.md, 0, Spacing.md, Spacing.sm),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SegmentedTabs(options: _folders, value: inbox.folder, onChanged: inbox.setFolder),
-            ),
+            child: SegmentedTabs(options: _folders, value: inbox.folder, onChanged: inbox.setFolder),
           ),
         ),
       ),

@@ -2,9 +2,10 @@ class ChatOptionsMessages {
   const ChatOptionsMessages._();
 
   static const String menu = 'Chat options';
-  static const String mute8h = 'Mute for 8 hours';
-  static const String mute1w = 'Mute for 1 week';
-  static const String muteAlways = 'Mute until I unmute';
+  static const String mute = 'Mute';
+  static const String for8h = 'For 8 hours';
+  static const String for1w = 'For 1 week';
+  static const String untilUnmute = 'Until I unmute';
   static const String unmute = 'Unmute';
   static const String muted = 'Muted. No sound or unread badge from this chat.';
   static const String unmuted = 'Chat unmuted.';

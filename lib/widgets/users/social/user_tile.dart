@@ -20,7 +20,7 @@ class UserTile extends StatelessWidget {
       leading: UserAvatar(user: summary.user, size: 44),
       title: Text(summary.user.userName, style: const TextStyle(fontWeight: FontWeight.w600)),
       onTap: () => context.push(AppRoutes.user(summary.user.userName)),
-      trailing: summary.isMe ? null : FollowButton(isFollowing: summary.isFollowing, onPressed: onToggleFollow),
+      trailing: summary.isMe ? null : FollowButton(isFollowing: summary.isFollowing, isRequested: summary.isRequested, onPressed: onToggleFollow),
     );
   }
 }

@@ -1,3 +1,4 @@
+import '../../../enums/chat/realtime/presence_state.dart';
 import '../../../constants/chat/realtime/chat_events_constants.dart';
 import '../../../models/chat/message/message.dart';
 import '../../../models/chat/message/reaction_count.dart';
@@ -29,7 +30,12 @@ class ThreadSocketBinding {
       if (payload is! JsonMap) return;
       final isOnline = payload['isOnline'] as bool;
       // A null presence means it is hidden from us, so it stays hidden.
-      _thread.updateMember(payload['userId'] as String, (member) => member.isOnline == null ? member : member.copyWith(isOnline: isOnline));
+      _thread.updateMember(
+        payload['userId'] as String,
+        (member) => member.isOnline == null
+            ? member
+            : member.copyWith(isOnline: isOnline, presence: PresenceState.fromWire(payload['presence'] as String?), statusText: payload['statusText'] as String? ?? ''),
+      );
     },
   };
 

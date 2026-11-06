@@ -11,6 +11,7 @@ import '../../../utilities/ui/feedback_utility.dart';
 import '../../../validations/users/auth/auth_validation.dart';
 import '../../../widgets/common/forms/app_text_field.dart';
 import '../../../widgets/common/forms/submit_button.dart';
+import '../../../widgets/users/auth/auth_app_bar.dart';
 import '../../../widgets/users/auth/auth_form_card.dart';
 
 /// After a successful sign-in, returns to the `redirect` route (or the feed).
@@ -46,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final isSubmitting = context.select<AuthController, bool>((auth) => auth.isSubmitting);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: const AuthAppBar(),
       body: Form(
         key: _formKey,
         child: AuthFormCard(

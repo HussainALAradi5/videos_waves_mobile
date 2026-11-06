@@ -9,11 +9,13 @@ import '../../../controllers/users/admin_request/my_admin_request_controller.dar
 import '../../../controllers/users/auth/auth_controller.dart';
 import '../../../controllers/users/settings/settings_controller.dart';
 import '../../../globals/app_dependencies.dart';
+import '../../../widgets/common/buttons/theme_toggle_button.dart';
 import '../../../widgets/common/feedback/loading_view.dart';
 import '../../../widgets/common/layout/constrained_content.dart';
 import '../profile/admin_request_panel.dart';
 import 'account_section.dart';
 import 'admin_link_tile.dart';
+import '../../../widgets/users/settings/bubble_preview.dart';
 import 'setting_row_tile.dart';
 
 /// Account, preference sections from the settings table, admin access, and sign out.
@@ -27,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
     final values = settings.settings?.toJson();
     final heading = Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.primary);
     return Scaffold(
-      appBar: AppBar(title: const Text(SettingsMessages.title)),
+      appBar: AppBar(title: const Text(SettingsMessages.title), actions: const [ThemeToggleButton()]),
       body: ConstrainedContent(
         child: ListView(padding: const EdgeInsets.all(Spacing.md), children: [
           Text(SettingsMessages.account, style: heading),
@@ -39,6 +41,7 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: Spacing.lg),
               Text(section.title, style: heading),
               for (final row in section.rows) SettingRowTile(row: row, value: values[row.key], onChanged: (value) => settings.change({row.key: value})),
+              if (section.showsBubblePreview) const BubblePreview(),
             ],
           const SizedBox(height: Spacing.lg),
           Text(SettingsMessages.admin, style: heading),

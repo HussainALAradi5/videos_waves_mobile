@@ -13,6 +13,8 @@ class SettingsMessages {
   static const String photoSaved = 'Profile picture updated';
   static const String appearance = 'Appearance';
   static const String privacy = 'Privacy';
+  static const String chats = 'Chats';
+  static const String status = 'Status';
   static const String messages = 'Messages';
   static const String videos = 'Videos';
   static const String admin = 'Admin access';

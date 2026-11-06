@@ -12,18 +12,21 @@ import '../../../enums/videos/video/feed_scope.dart';
 import '../../../models/common/ui/dropdown_option.dart';
 import '../../../widgets/common/brand/brand_title.dart';
 import '../../../widgets/common/feedback/empty_view.dart';
+import '../../../widgets/common/buttons/theme_toggle_button.dart';
 import '../../../widgets/common/layout/constrained_content.dart';
 import '../../../widgets/common/lists/paged_list_view.dart';
 import '../../../widgets/common/motion/fade_slide_in.dart';
 import '../../../widgets/common/tabs/segmented_tabs.dart';
+import '../../../widgets/notifications/notification_bell.dart';
 import '../../../widgets/videos/video/video_card.dart';
 
-const List<DropdownOption<FeedScope>> _scopes = [
-  DropdownOption(value: FeedScope.all, label: VideoMessages.forYou),
-  DropdownOption(value: FeedScope.following, label: VideoMessages.following),
-];
+List<DropdownOption<FeedScope>> _scopesFor({required bool isSignedIn}) => [
+      const DropdownOption(value: FeedScope.all, label: VideoMessages.forYou, leading: Icon(Icons.auto_awesome)),
+      if (isSignedIn) const DropdownOption(value: FeedScope.following, label: VideoMessages.following, leading: Icon(Icons.group_outlined)),
+      const DropdownOption(value: FeedScope.discover, label: VideoMessages.discover, leading: Icon(Icons.explore_outlined)),
+    ];
 
-/// Home: For you and Following, with a title search.
+/// Home: For you, Following, and Discover, with a title search, the theme switch, and the bell.
 class VideoFeedScreen extends StatelessWidget {
   const VideoFeedScreen({super.key});
 
@@ -34,8 +37,9 @@ class VideoFeedScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const BrandTitle(),
+        actions: [const ThemeToggleButton(), if (isSignedIn) const NotificationBell()],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(isSignedIn ? 112 : 64),
+          preferredSize: const Size.fromHeight(124),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(Spacing.md, 0, Spacing.md, Spacing.sm),
             child: Column(children: [
@@ -44,10 +48,8 @@ class VideoFeedScreen extends StatelessWidget {
                 textInputAction: TextInputAction.search,
                 decoration: const InputDecoration(prefixIcon: Icon(Icons.search), hintText: AppMessages.searchHint, isDense: true),
               ),
-              if (isSignedIn) ...[
-                const SizedBox(height: Spacing.sm),
-                SegmentedTabs(options: _scopes, value: feed.scope, onChanged: feed.setScope),
-              ],
+              const SizedBox(height: Spacing.sm),
+              SegmentedTabs(options: _scopesFor(isSignedIn: isSignedIn), value: feed.scope, onChanged: feed.setScope),
             ]),
           ),
         ),

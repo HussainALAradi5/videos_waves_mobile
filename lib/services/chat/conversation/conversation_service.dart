@@ -1,3 +1,4 @@
+import '../../../enums/chat/conversation/chat_background.dart';
 import '../../../enums/chat/conversation/mute_duration.dart';
 import '../../../config/api/endpoints/chat_endpoints.dart';
 import '../../../dtos/common/pagination/page_request_dto.dart';
@@ -33,6 +34,9 @@ class ConversationService {
   /// Mute for 8 hours, a week, until unmuted, or `off` to unmute.
   Future<Conversation> mute(String id, MuteDuration duration) =>
       _client.patch(ChatEndpoints.conversation(id), Conversation.fromJson, body: {'mute': duration.wire});
+
+  Future<Conversation> setBackground(String id, ChatBackground background) =>
+      _client.patch(ChatEndpoints.conversation(id), Conversation.fromJson, body: {'background': background.wire});
 
   Future<void> leave(String id, String myUserId) => _client.delete(ChatEndpoints.member(id, myUserId), ignoreBody);
 }

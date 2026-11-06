@@ -10,7 +10,7 @@ import '../../../widgets/common/avatars/user_avatar.dart';
 import '../../../constants/chat/chat_options_constants.dart';
 import '../../../widgets/chat/options/chat_options_sheet.dart';
 
-/// Avatar and name, with "typing..." or "Active now" under it.
+/// Avatar and name, with "typing..." or their status (Online · custom line) under it.
 class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
   const ThreadAppBar({super.key});
 
@@ -27,13 +27,13 @@ class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
         ? ChatMessages.typing
         : conversation.isGroup
             ? ChatMessages.members(conversation.membersCount + 1)
-            : (isPartnerOnline(conversation) ? ChatMessages.online : null);
+            : (partner == null ? null : describePresence(partner, ChatMessages.presenceLabels));
     return AppBar(
       titleSpacing: 0,
       title: InkWell(
         onTap: partner == null ? null : () => context.push(AppRoutes.user(partner.user.userName)),
         child: Row(children: [
-          if (partner != null) UserAvatar(user: partner.user, size: 36, isOnline: partner.isOnline) else const Icon(Icons.groups),
+          if (partner != null) UserAvatar(user: partner.user, size: 36, isOnline: partner.isOnline, presence: partner.presence) else const Icon(Icons.groups),
           const SizedBox(width: 10),
           Expanded(
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -51,10 +51,10 @@ class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
             final thread = context.read<ThreadController>();
             final router = GoRouter.of(context);
             final result = await showChatOptions(context, conversation);
-            // After deleting or leaving, go back to the inbox; after a mute change, reload the chat.
+            // After deleting or leaving, go back to the inbox; after a mute or background change, reload the chat.
             if (result == ChatOptionResult.removed) {
               router.canPop() ? router.pop() : router.go(AppRoutes.messages);
-            } else if (result == ChatOptionResult.muteChanged) {
+            } else if (result != null) {
               await thread.load();
             }
           },

@@ -6,7 +6,7 @@ import '../../../models/users/profile/profile.dart';
 import '../../../models/users/profile/user_summary.dart';
 import '../../api/api_client.dart';
 
-/// Profiles, people search, follows, blocks, and restrictions.
+/// Profiles, people search, follows and follow requests, blocks, and restrictions.
 class SocialService {
   const SocialService(this._client);
 
@@ -27,7 +27,14 @@ class SocialService {
       _client.getPage(UserEndpoints.following(userName), page.toQuery(), UserSummary.fromJson);
 
   Future<JsonMap> setFollowing(String userName, {required bool isFollowing}) =>
-      isFollowing ? _client.put(UserEndpoints.follow(userName), ignoreBody) : _client.delete(UserEndpoints.follow(userName), ignoreBody);
+      isFollowing ? _client.put(UserEndpoints.follow(userName), (json) => json) : _client.delete(UserEndpoints.follow(userName), (json) => json);
+
+  Future<PageResult<UserSummary>> followRequests(PageRequestDto page) =>
+      _client.getPage(UserEndpoints.meFollowRequests, page.toQuery(), UserSummary.fromJson);
+
+  Future<void> acceptRequest(String userName) => _client.put(UserEndpoints.followRequest(userName), ignoreBody);
+
+  Future<void> declineRequest(String userName) => _client.delete(UserEndpoints.followRequest(userName), ignoreBody);
 
   Future<JsonMap> setBlocked(String userName, {required bool isBlocked}) =>
       isBlocked ? _client.put(UserEndpoints.block(userName), ignoreBody) : _client.delete(UserEndpoints.block(userName), ignoreBody);

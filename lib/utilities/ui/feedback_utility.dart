@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 
+import '../../enums/common/toast_type.dart';
+import '../../globals/app_toasts.dart';
 import '../errors/api_exception.dart';
 
-void showMessage(BuildContext context, String message) {
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(content: Text(message), behavior: SnackBarBehavior.floating));
+/// Shows a toast of any type (works without a context, for socket events too).
+void showToast(ToastType type, String message,
+    {String? description, Duration? duration, String? actionLabel, VoidCallback? onAction, bool isPausable = true}) {
+  appToasts.show(type, message, description: description, duration: duration, actionLabel: actionLabel, onAction: onAction, isPausable: isPausable);
 }
 
-/// Runs an action and reports the outcome in a snack bar. Returns true on success.
+/// A neutral confirmation, such as "Copied".
+void showMessage(BuildContext context, String message) => showToast(ToastType.info, message);
+
+/// Runs an action and reports the outcome as a toast. Returns true on success.
 Future<bool> runWithFeedback(BuildContext context, Future<void> Function() action, {String? successMessage}) async {
-  final messenger = ScaffoldMessenger.of(context);
   try {
     await action();
-    if (successMessage != null) {
-      messenger.showSnackBar(SnackBar(content: Text(successMessage), behavior: SnackBarBehavior.floating));
-    }
+    if (successMessage != null) showToast(ToastType.success, successMessage);
     return true;
   } catch (error) {
-    messenger.showSnackBar(SnackBar(content: Text(errorMessageOf(error)), behavior: SnackBarBehavior.floating));
+    showToast(ToastType.error, errorMessageOf(error));
     return false;
   }
 }

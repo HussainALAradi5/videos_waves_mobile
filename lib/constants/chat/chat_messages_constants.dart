@@ -1,8 +1,27 @@
+import '../../enums/chat/realtime/presence_state.dart';
+
 class ChatMessages {
   const ChatMessages._();
 
   static const String title = 'Messages';
   static const String inbox = 'Inbox';
+  static const String all = 'All';
+  static const String read = 'Read';
+  static const String tickSent = 'Sent';
+  static const String tickSeenBySome = 'Seen by some';
+  static const String tickRead = 'Read';
+  static const String background = 'Chat background';
+  static const String backgroundHint = 'Only you see this, and only in this chat.';
+  static const String backgroundSaved = 'Background updated';
+  static const String statusPicker = 'Your status';
+  static const Map<PresenceState, String> presenceLabels = {
+    PresenceState.online: 'Online',
+    PresenceState.away: 'Away',
+    PresenceState.busy: 'Busy',
+    PresenceState.offline: 'Offline',
+  };
+  static String newMessageFrom(String name) => 'New message from $name';
+  static const String attachmentPreview = 'Sent an attachment';
   static const String requests = 'Requests';
   static const String groups = 'Groups';
   static const String unread = 'Unread';

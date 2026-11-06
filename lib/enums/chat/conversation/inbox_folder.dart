@@ -3,7 +3,8 @@ enum InboxFolder {
   inbox('inbox'),
   requests('requests'),
   groups('groups'),
-  unread('unread');
+  unread('unread'),
+  read('read');
 
   const InboxFolder(this.wire);
 

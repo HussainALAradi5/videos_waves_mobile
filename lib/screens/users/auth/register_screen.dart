@@ -13,6 +13,7 @@ import '../../../validations/users/auth/auth_validation.dart';
 import '../../../widgets/common/forms/app_text_field.dart';
 import '../../../widgets/common/forms/submit_button.dart';
 import '../../../widgets/common/tabs/segmented_tabs.dart';
+import '../../../widgets/users/auth/auth_app_bar.dart';
 import '../../../widgets/users/auth/auth_form_card.dart';
 
 /// Registration signs the user in, then opens the feed.
@@ -52,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     final isSubmitting = context.select<AuthController, bool>((auth) => auth.isSubmitting);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: const AuthAppBar(),
       body: Form(
         key: _formKey,
         child: AuthFormCard(

@@ -2,6 +2,7 @@ class VideoMessages {
   const VideoMessages._();
 
   static const String forYou = 'For you';
+  static const String discover = 'Discover';
   static const String following = 'Following';
   static const String noFollowingVideos = 'Follow people to see their waves here.';
   static const String editVideo = 'Edit video';

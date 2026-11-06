@@ -4,18 +4,20 @@ import 'package:provider/provider.dart';
 
 import '../../../constants/chat/chat_messages_constants.dart';
 import '../../../constants/common/routes_constants.dart';
-import '../../../constants/users/settings/bubble_gradients_constants.dart';
 import '../../../controllers/users/settings/settings_controller.dart';
 import '../../../enums/chat/message/message_kind.dart';
-import '../../../enums/users/settings/bubble_color.dart';
+import '../../../enums/chat/message/read_state.dart';
 import '../../../models/chat/message/message.dart';
+import '../../../models/users/settings/user_settings.dart';
+import '../../../utilities/chat/bubble_look_utility.dart';
 import '../../../utilities/format/formatters.dart';
 import '../../common/avatars/user_avatar.dart';
 import '../../common/motion/fade_slide_in.dart';
 import 'message_attachments.dart';
+import 'message_ticks.dart';
 import 'voice_note_player.dart';
 
-/// A chat bubble: your gradient on the right, theirs on the left, with reply quote and reactions.
+/// A chat bubble in the reader's chosen shape and colours (yours right, theirs left), with reply quote, ticks, and reactions.
 class MessageBubble extends StatelessWidget {
   const MessageBubble({
     super.key,
@@ -25,6 +27,7 @@ class MessageBubble extends StatelessWidget {
     required this.showName,
     required this.onLongPress,
     required this.onSwipeReply,
+    this.readState,
   });
 
   final Message message;
@@ -34,11 +37,22 @@ class MessageBubble extends StatelessWidget {
   final VoidCallback onLongPress;
   final VoidCallback onSwipeReply;
 
+  /// Your messages only: the ticks next to the time.
+  final ReadState? readState;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final bubbleColor = context.select<SettingsController, BubbleColor>((settings) => settings.settings?.bubbleColor ?? BubbleColor.wave);
-    final foreground = isMine ? Colors.white : scheme.onSurface;
+    final settings = context.select<SettingsController, UserSettings>((controller) => controller.settings ?? const UserSettings());
+    final look = bubbleLook(
+      scheme: scheme,
+      isMine: isMine,
+      isUnsent: message.isUnsent,
+      style: settings.bubbleStyle,
+      myColor: settings.bubbleColor,
+      othersColor: settings.othersBubbleColor,
+    );
+    final foreground = look.foreground;
     final muted = TextStyle(color: foreground.withValues(alpha: 0.7), fontSize: 11);
     final content = message.isUnsent
         ? Text(ChatMessages.unsent, style: TextStyle(color: foreground.withValues(alpha: 0.7), fontStyle: FontStyle.italic))
@@ -68,19 +82,13 @@ class MessageBubble extends StatelessWidget {
     final bubble = Container(
       constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.72),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: isMine && !message.isUnsent ? BubbleGradients.of(bubbleColor) : null,
-        color: isMine && !message.isUnsent ? null : scheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(18),
-          topRight: const Radius.circular(18),
-          bottomLeft: Radius.circular(isMine ? 18 : 4),
-          bottomRight: Radius.circular(isMine ? 4 : 18),
-        ),
-      ),
+      decoration: look.decoration,
       child: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisSize: MainAxisSize.min, children: [
         content,
-        Text('${message.isEdited && !message.isUnsent ? '${ChatMessages.edited} · ' : ''}${formatClock(message.createdAt)}', style: muted),
+        Row(mainAxisSize: MainAxisSize.min, children: [
+          Text('${message.isEdited && !message.isUnsent ? '${ChatMessages.edited} · ' : ''}${formatClock(message.createdAt)}', style: muted),
+          if (readState != null && !message.isUnsent) ...[const SizedBox(width: 3), MessageTicks(state: readState!, color: muted.color!)],
+        ]),
       ]),
     );
     return FadeSlideIn(

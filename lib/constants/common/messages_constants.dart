@@ -26,7 +26,7 @@ class AppMessages {
 
   static const String loginTitle = 'Welcome back';
   static const String registerTitle = 'Join Videos Waves';
-  static const String identifierLabel = 'Username or email';
+  static const String identifierLabel = 'Username, email, or mobile number';
   static const String userNameLabel = 'Username';
   static const String emailLabel = 'Email';
   static const String phoneLabel = 'Phone number (optional, with country code)';

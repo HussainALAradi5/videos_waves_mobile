@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Release builds need these explicitly: the API and CDN, and voice notes. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
-        android:label="videos_waves_mobile"
+        android:label="Videos Waves"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

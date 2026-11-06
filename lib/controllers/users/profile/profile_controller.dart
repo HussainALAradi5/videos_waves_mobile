@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../models/users/profile/profile.dart';
+import '../../../services/api/api_client.dart';
+import '../../../services/users/admin_users/admin_users_service.dart';
 import '../../../services/users/social/social_service.dart';
 
 /// One profile with optimistic follow, block, and restrict toggles.
 class ProfileController extends ChangeNotifier {
-  ProfileController(this._social, this.userName);
+  ProfileController(this._social, this._client, this.userName);
 
   final SocialService _social;
+  final ApiClient _client;
   final String userName;
   Profile? profile;
   Object? error;
@@ -39,6 +42,12 @@ class ProfileController extends ChangeNotifier {
   /// Blocking also ends follows both ways, so the profile is reloaded afterwards.
   Future<void> setBlocked(bool isBlocked) async {
     await _social.setBlocked(userName, isBlocked: isBlocked);
+    await load();
+  }
+
+  /// Admins only; the profile reloads to show the new status.
+  Future<void> setActive(bool isActive) async {
+    await AdminUsersService(_client).setActive(userName, isActive: isActive);
     await load();
   }
 

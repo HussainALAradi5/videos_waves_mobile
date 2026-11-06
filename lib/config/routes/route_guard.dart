@@ -16,7 +16,7 @@ String? resolveRedirect(AuthController auth, Uri uri) {
   if (isProtected && !auth.isAuthenticated) {
     return '${AppRoutes.login}?${AppRoutes.redirectParam}=${Uri.encodeComponent(uri.toString())}';
   }
-  if (path == AppRoutes.adminRequests && !auth.isAdmin) return AppRoutes.feed;
+  if (path.startsWith(AppRoutes.adminPrefix) && !auth.isAdmin) return AppRoutes.feed;
   if (isAuthScreen && auth.isAuthenticated) return safeRedirect(uri.queryParameters[AppRoutes.redirectParam]);
   return null;
 }

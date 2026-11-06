@@ -18,6 +18,7 @@ class User with BaseModel {
     this.followersCount = 0,
     this.followingCount = 0,
     this.videosCount = 0,
+    this.isActive = true,
   });
 
   factory User.fromJson(JsonMap json) => User(
@@ -32,6 +33,7 @@ class User with BaseModel {
         followersCount: json['followersCount'] as int? ?? 0,
         followingCount: json['followingCount'] as int? ?? 0,
         videosCount: json['videosCount'] as int? ?? 0,
+        isActive: json['isActive'] as bool? ?? true,
         createdAt: DateTime.parse(json['createdAt'] as String),
       );
 
@@ -48,6 +50,9 @@ class User with BaseModel {
   final int followersCount;
   final int followingCount;
   final int videosCount;
+
+  /// False when an admin deactivated the account.
+  final bool isActive;
   @override
   final DateTime createdAt;
 

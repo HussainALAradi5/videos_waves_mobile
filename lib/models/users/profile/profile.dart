@@ -1,3 +1,4 @@
+import '../../../enums/users/roles/role.dart';
 import '../../common/json_map.dart';
 import '../user/public_user.dart';
 
@@ -14,6 +15,8 @@ class Profile {
     required this.followsYou,
     required this.isBlocked,
     required this.isRestricted,
+    this.role = Role.user,
+    this.isActive = true,
   });
 
   factory Profile.fromJson(JsonMap json) => Profile(
@@ -27,6 +30,8 @@ class Profile {
         followsYou: json['followsYou'] as bool,
         isBlocked: json['isBlocked'] as bool,
         isRestricted: json['isRestricted'] as bool,
+        role: Role.fromWire(json['role'] as String? ?? Role.user.wireValue),
+        isActive: json['isActive'] as bool? ?? true,
       );
 
   final PublicUser user;
@@ -39,6 +44,10 @@ class Profile {
   final bool followsYou;
   final bool isBlocked;
   final bool isRestricted;
+  final Role role;
+
+  /// False when an admin deactivated the account; only admins can open such a profile.
+  final bool isActive;
 
   Profile copyWith({bool? isFollowing, int? followersCount, bool? isBlocked, bool? isRestricted}) => Profile(
         user: user,
@@ -51,5 +60,7 @@ class Profile {
         followsYou: followsYou,
         isBlocked: isBlocked ?? this.isBlocked,
         isRestricted: isRestricted ?? this.isRestricted,
+        role: role,
+        isActive: isActive,
       );
 }

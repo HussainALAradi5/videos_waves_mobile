@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constants/common/ui_constants.dart';
+import '../../../constants/users/admin_users/admin_users_constants.dart';
 import '../../../constants/users/social/social_messages_constants.dart';
+import '../../../enums/users/user/account_status.dart';
+import '../../../widgets/common/badges/status_chip.dart';
 import '../../../globals/app_dependencies.dart';
 import '../../../models/users/profile/profile.dart';
 import '../../../widgets/common/avatars/user_avatar.dart';
@@ -47,6 +50,7 @@ class ProfileHeader extends StatelessWidget {
         Row(children: [
           Text(userName, style: const TextStyle(fontWeight: FontWeight.w700)),
           if (profile.followsYou && !profile.isMe) ...[const SizedBox(width: Spacing.sm), Text(SocialMessages.followsYou, style: muted)],
+          if (!profile.isActive) ...[const SizedBox(width: Spacing.sm), StatusChip(option: accountStatusOptions[AccountStatus.inactive]!)],
         ]),
         if (profile.bio.isNotEmpty) Padding(padding: const EdgeInsets.only(top: Spacing.xs), child: Text(profile.bio)),
         if (profile.isBlocked) Padding(padding: const EdgeInsets.only(top: Spacing.sm), child: Text(SocialMessages.blockedNotice, style: muted)),

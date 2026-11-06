@@ -10,6 +10,8 @@ class AppRoutes {
   static const String profile = '/profile';
   static const String settings = '/settings';
   static const String adminRequests = '/admin/requests';
+  static const String adminUsers = '/admin/users';
+  static const String adminPrefix = '/admin';
   static const String videoPattern = '/videos/:videoId';
   static const String userPattern = '/u/:userName';
   static const String threadPattern = '/messages/:conversationId';
@@ -23,5 +25,5 @@ class AppRoutes {
   static String thread(String conversationId) => '$messages/${Uri.encodeComponent(conversationId)}';
 
   /// Routes that need a signed-in user.
-  static const List<String> protectedPrefixes = [upload, messages, profile, settings, adminRequests];
+  static const List<String> protectedPrefixes = [upload, messages, profile, settings, adminPrefix];
 }

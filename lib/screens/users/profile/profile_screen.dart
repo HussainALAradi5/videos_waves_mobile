@@ -2,76 +2,72 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../constants/common/messages_constants.dart';
 import '../../../constants/common/routes_constants.dart';
-import '../../../constants/common/ui_constants.dart';
-import '../../../constants/users/roles/role_constants.dart';
-import '../../../controllers/users/admin_request/my_admin_request_controller.dart';
+import '../../../constants/users/settings/settings_messages_constants.dart';
+import '../../../constants/users/social/social_messages_constants.dart';
 import '../../../controllers/users/auth/auth_controller.dart';
+import '../../../controllers/users/profile/profile_controller.dart';
 import '../../../globals/app_dependencies.dart';
-import '../../../utilities/format/formatters.dart';
-import '../../../widgets/common/avatars/user_avatar.dart';
-import '../../../widgets/common/badges/status_chip.dart';
+import '../../../utilities/errors/api_exception.dart';
+import '../../../widgets/common/feedback/empty_view.dart';
+import '../../../widgets/common/feedback/error_view.dart';
+import '../../../widgets/common/feedback/loading_view.dart';
 import '../../../widgets/common/layout/constrained_content.dart';
-import 'admin_request_panel.dart';
+import 'profile_header.dart';
+import 'profile_videos_grid.dart';
 
+/// Someone's profile, or yours when [userName] is null (the Profile tab).
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({super.key, this.userName});
+
+  final String? userName;
 
   @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthController>();
-    final user = auth.user;
-    if (user == null) return const SizedBox.shrink();
-    final theme = Theme.of(context);
+    final me = context.select<AuthController, String?>((auth) => auth.user?.userName);
+    final target = userName ?? me;
+    if (target == null) return const SizedBox.shrink();
+    return ChangeNotifierProvider(
+      key: ValueKey(target),
+      create: (context) => ProfileController(context.read<AppDependencies>().socialService, target)..load(),
+      child: _ProfileBody(isMe: target == me),
+    );
+  }
+}
 
+class _ProfileBody extends StatelessWidget {
+  const _ProfileBody({required this.isMe});
+
+  final bool isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = context.watch<ProfileController>();
+    final profile = controller.profile;
+    Widget body;
+    if (controller.isLoading && profile == null) {
+      body = const LoadingView();
+    } else if (controller.error is ApiException && (controller.error! as ApiException).isNotFound) {
+      body = const EmptyView(title: SocialMessages.userNotFound, icon: Icons.person_off_outlined);
+    } else if (profile == null) {
+      body = ErrorView(error: controller.error ?? SocialMessages.userNotFound, onRetry: controller.load);
+    } else {
+      body = RefreshIndicator(
+        onRefresh: controller.load,
+        child: CustomScrollView(slivers: [
+          SliverToBoxAdapter(child: ProfileHeader(profile: profile)),
+          if (!profile.isBlocked) ProfileVideosGrid(key: ValueKey(profile.user.id), ownerId: profile.user.id),
+        ]),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppMessages.profileTitle),
-        actions: [IconButton(tooltip: AppMessages.logout, icon: const Icon(Icons.logout), onPressed: auth.logout)],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(Spacing.md),
-        children: [
-          ConstrainedContent(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    UserAvatar(userName: user.userName, imageUrl: user.image, radius: Layout.avatarLarge),
-                    const SizedBox(width: Spacing.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(user.userName, style: theme.textTheme.titleLarge),
-                          Text(user.email, style: theme.textTheme.bodyMedium),
-                          Text(formatDate(user.createdAt), style: theme.textTheme.bodySmall),
-                        ],
-                      ),
-                    ),
-                    StatusChip(option: roleOptions[user.role]!),
-                  ],
-                ),
-                const Divider(height: Spacing.xl),
-                if (user.isAdmin)
-                  ListTile(
-                    leading: const Icon(Icons.admin_panel_settings_outlined),
-                    title: const Text(AppMessages.reviewRequests),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push(AppRoutes.adminRequests),
-                  )
-                else
-                  ChangeNotifierProvider(
-                    create: (context) => MyAdminRequestController(context.read<AppDependencies>().adminRequestService)..load(),
-                    child: const AdminRequestPanel(),
-                  ),
-              ],
-            ),
-          ),
+        title: Text(controller.userName, style: const TextStyle(fontWeight: FontWeight.w700)),
+        actions: [
+          if (isMe) IconButton(tooltip: SettingsMessages.title, icon: const Icon(Icons.settings_outlined), onPressed: () => context.push(AppRoutes.settings)),
         ],
       ),
+      body: ConstrainedContent(child: body),
     );
   }
 }

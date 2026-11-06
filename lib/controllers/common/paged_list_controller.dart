@@ -83,6 +83,17 @@ abstract class PagedListController<T> extends ChangeNotifier {
   }
 
   @protected
+  int indexWhere(bool Function(T item) test) => _items.indexWhere(test);
+
+  /// Puts an item back at [index] (clamped), for Undo after a delete.
+  @protected
+  void insertAt(int index, T item) {
+    _items.insert(index.clamp(0, _items.length), item);
+    _meta = _meta == null ? null : _withTotal(_meta!, 1);
+    notifyListeners();
+  }
+
+  @protected
   void removeWhere(bool Function(T item) test) {
     final before = _items.length;
     _items.removeWhere(test);

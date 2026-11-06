@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../constants/common/ui_constants.dart';
+import '../waves/wave_loader.dart';
 
 class LoadingView extends StatelessWidget {
   const LoadingView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Padding(padding: EdgeInsets.all(Spacing.xl), child: CircularProgressIndicator()),
-    );
-  }
+  Widget build(BuildContext context) => const Center(child: WaveLoader(size: 36));
 }

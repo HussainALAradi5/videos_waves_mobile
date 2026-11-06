@@ -14,6 +14,11 @@ class AppMessages {
   static const String navFeed = 'Feed';
   static const String navUpload = 'Upload';
   static const String navProfile = 'Profile';
+  static const String navSearch = 'Search';
+  static const String navMessages = 'Messages';
+  static const String genderLabel = 'I am';
+  static const String male = 'Male';
+  static const String female = 'Female';
 
   static const String loginTitle = 'Welcome back';
   static const String registerTitle = 'Join Videos Waves';

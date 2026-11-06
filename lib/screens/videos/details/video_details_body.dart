@@ -5,32 +5,19 @@ import 'package:provider/provider.dart';
 import '../../../constants/common/messages_constants.dart';
 import '../../../constants/common/routes_constants.dart';
 import '../../../constants/common/ui_constants.dart';
-import '../../../controllers/users/auth/auth_controller.dart';
 import '../../../controllers/videos/video/video_details_controller.dart';
 import '../../../utilities/errors/api_exception.dart';
-import '../../../utilities/format/formatters.dart';
-import '../../../utilities/ui/feedback_utility.dart';
-import '../../../widgets/common/avatars/user_avatar.dart';
 import '../../../widgets/common/feedback/empty_view.dart';
 import '../../../widgets/common/feedback/error_view.dart';
 import '../../../widgets/common/feedback/loading_view.dart';
 import '../../../widgets/common/layout/constrained_content.dart';
-import '../../../widgets/videos/video/like_button.dart';
 import '../../../widgets/videos/video/video_player_view.dart';
 import '../../../widgets/videos/video/video_stats_row.dart';
 import 'video_comments_section.dart';
+import 'video_owner_row.dart';
 
 class VideoDetailsBody extends StatelessWidget {
   const VideoDetailsBody({super.key});
-
-  void _onLike(BuildContext context, VideoDetailsController details) {
-    final auth = context.read<AuthController>();
-    if (!auth.isAuthenticated) {
-      context.push('${AppRoutes.login}?${AppRoutes.redirectParam}=${Uri.encodeComponent(AppRoutes.video(details.videoId))}');
-      return;
-    }
-    runWithFeedback(context, details.toggleLike);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,32 +36,22 @@ class VideoDetailsBody extends StatelessWidget {
       body = ListView(
         padding: const EdgeInsets.only(bottom: Spacing.xl),
         children: [
-          VideoPlayerView(url: video.videoUrl, onFirstPlay: details.recordViewOnce),
+          Hero(tag: 'video-${video.id}', child: VideoPlayerView(url: video.videoUrl, onFirstPlay: details.recordViewOnce)),
           Padding(
             padding: const EdgeInsets.all(Spacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(video.title, style: theme.textTheme.headlineSmall),
-                const SizedBox(height: Spacing.sm),
-                Row(
-                  children: [
-                    UserAvatar(userName: video.owner.userName, imageUrl: video.owner.image),
-                    const SizedBox(width: Spacing.sm),
-                    Expanded(child: Text('${video.owner.userName} · ${formatRelative(video.createdAt)}')),
-                    LikeButton(video: video, isBusy: details.isLiking, onPressed: () => _onLike(context, details)),
-                  ],
-                ),
-                const SizedBox(height: Spacing.sm),
-                VideoStatsRow(video: video),
-                if (video.description.isNotEmpty) ...[
-                  const SizedBox(height: Spacing.md),
-                  Text(video.description, style: theme.textTheme.bodyMedium),
-                ],
-                const Divider(height: Spacing.xl),
-                const VideoCommentsSection(),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(video.title, style: theme.textTheme.headlineSmall),
+              const SizedBox(height: Spacing.sm),
+              VideoStatsRow(video: video),
+              const SizedBox(height: Spacing.md),
+              VideoOwnerRow(video: video),
+              if (video.description.isNotEmpty) ...[
+                const SizedBox(height: Spacing.md),
+                Text(video.description, style: theme.textTheme.bodyMedium),
               ],
-            ),
+              const Divider(height: Spacing.xl),
+              const VideoCommentsSection(),
+            ]),
           ),
         ],
       );

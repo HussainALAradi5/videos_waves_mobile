@@ -28,7 +28,7 @@ class AdminRequestTile extends StatelessWidget {
           children: [
             Row(
               children: [
-                UserAvatar(userName: request.requester.userName, imageUrl: request.requester.image),
+                UserAvatar(user: request.requester),
                 const SizedBox(width: Spacing.sm),
                 Expanded(child: Text(request.requester.userName, style: theme.textTheme.titleSmall)),
                 StatusChip(option: adminRequestStatusOptions[request.status]!),

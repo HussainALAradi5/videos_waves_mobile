@@ -3,13 +3,14 @@ import 'package:flutter/foundation.dart';
 import '../../../interfaces/services/videos/video/video_service_interface.dart';
 import '../../../models/videos/video/video.dart';
 
-/// One video: loading, an optimistic like toggle, and one counted view per visit.
+/// One video: loading, an optimistic like toggle, one counted view per visit, and owner edits.
 class VideoDetailsController extends ChangeNotifier {
-  VideoDetailsController(this._videoService, this.videoId, {this.onVideoChanged});
+  VideoDetailsController(this._videoService, this.videoId, {this.onVideoChanged, this.onVideoDeleted});
 
   final VideoServiceInterface _videoService;
   final String videoId;
   final void Function(Video video)? onVideoChanged;
+  final void Function(String videoId)? onVideoDeleted;
 
   Video? video;
   Object? error;
@@ -58,6 +59,16 @@ class VideoDetailsController extends ChangeNotifier {
     }).catchError((Object _) {
       _hasRecordedView = false;
     });
+  }
+
+  Future<void> update({required String title, required String description}) async {
+    final updated = await _videoService.update(videoId, title: title.trim(), description: description.trim());
+    _setVideo(video!.copyWith(title: updated.title, description: updated.description));
+  }
+
+  Future<void> remove() async {
+    await _videoService.remove(videoId);
+    onVideoDeleted?.call(videoId);
   }
 
   void adjustCommentsCount(int delta) {

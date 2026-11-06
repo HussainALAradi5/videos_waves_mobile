@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 
 final NumberFormat _compact = NumberFormat.compact();
 final DateFormat _date = DateFormat.yMMMd();
+final DateFormat _clock = DateFormat.Hm();
 
 String formatCount(int value) => _compact.format(value);
 
@@ -16,3 +17,5 @@ String formatRelative(DateTime value, {DateTime? now}) {
   if (elapsed.inDays < 7) return '${elapsed.inDays}d ago';
   return formatDate(value);
 }
+
+String formatClock(DateTime value) => _clock.format(value.toLocal());

@@ -4,6 +4,7 @@ import '../../config/api/api_config.dart';
 import '../../middlewares/auth/auth_interceptor.dart';
 import '../../middlewares/errors/error_interceptor.dart';
 import '../../models/common/json_map.dart';
+import '../../models/common/pagination/cursor_page.dart';
 import '../../models/common/pagination/page_meta.dart';
 import '../../models/common/pagination/page_result.dart';
 import '../../utilities/errors/api_exception.dart';
@@ -13,8 +14,7 @@ typedef JsonParser<T> = T Function(JsonMap json);
 
 /// The one configured HTTP client. Unwraps the server envelope `{ success, data, meta }`.
 class ApiClient {
-  ApiClient({required TokenStorage tokenStorage, required void Function() onSessionExpired})
-      : _dio = Dio(_options()) {
+  ApiClient({required this.tokenStorage, required void Function() onSessionExpired}) : _dio = Dio(_options()) {
     _dio.interceptors.addAll([
       AuthInterceptor(Dio(_options()), tokenStorage, onSessionExpired),
       ErrorInterceptor(),
@@ -22,6 +22,7 @@ class ApiClient {
   }
 
   final Dio _dio;
+  final TokenStorage tokenStorage;
 
   static BaseOptions _options() => BaseOptions(
         baseUrl: ApiConfig.baseUrl,
@@ -29,8 +30,13 @@ class ApiClient {
         receiveTimeout: ApiConfig.receiveTimeout,
       );
 
-  Future<T> get<T>(String path, JsonParser<T> parse) async =>
-      parse(_data(await _send(() => _dio.get<JsonMap>(path))));
+  Future<T> get<T>(String path, JsonParser<T> parse, {Map<String, Object>? query}) async =>
+      parse(_data(await _send(() => _dio.get<JsonMap>(path, queryParameters: query))));
+
+  Future<List<T>> getList<T>(String path, JsonParser<T> parse) async {
+    final body = await _send(() => _dio.get<JsonMap>(path));
+    return (body['data'] as List<dynamic>).cast<JsonMap>().map(parse).toList();
+  }
 
   Future<PageResult<T>> getPage<T>(String path, Map<String, Object> query, JsonParser<T> parse) async {
     final body = await _send(() => _dio.get<JsonMap>(path, queryParameters: query));
@@ -38,16 +44,23 @@ class ApiClient {
     return PageResult(items: items, meta: PageMeta.fromJson(body['meta'] as JsonMap));
   }
 
+  Future<CursorPage<T>> getCursorPage<T>(String path, Map<String, Object> query, JsonParser<T> parse) async {
+    final body = await _send(() => _dio.get<JsonMap>(path, queryParameters: query));
+    final items = (body['data'] as List<dynamic>).cast<JsonMap>().map(parse).toList();
+    return CursorPage(items: items, nextCursor: (body['meta'] as JsonMap?)?['nextCursor'] as String?);
+  }
+
   Future<T> post<T>(String path, JsonParser<T> parse, {Object? body, Options? options, ProgressCallback? onSendProgress}) async =>
       parse(_data(await _send(() => _dio.post<JsonMap>(path, data: body, options: options, onSendProgress: onSendProgress))));
 
-  Future<T> put<T>(String path, JsonParser<T> parse) async => parse(_data(await _send(() => _dio.put<JsonMap>(path))));
+  Future<T> put<T>(String path, JsonParser<T> parse, {Object? body}) async =>
+      parse(_data(await _send(() => _dio.put<JsonMap>(path, data: body))));
 
   Future<T> patch<T>(String path, JsonParser<T> parse, {Object? body}) async =>
       parse(_data(await _send(() => _dio.patch<JsonMap>(path, data: body))));
 
-  Future<T> delete<T>(String path, JsonParser<T> parse) async =>
-      parse(_data(await _send(() => _dio.delete<JsonMap>(path))));
+  Future<T> delete<T>(String path, JsonParser<T> parse, {Map<String, Object>? query}) async =>
+      parse(_data(await _send(() => _dio.delete<JsonMap>(path, queryParameters: query))));
 
   JsonMap _data(JsonMap body) => body['data'] as JsonMap;
 

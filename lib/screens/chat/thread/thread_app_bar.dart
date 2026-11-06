@@ -9,6 +9,7 @@ import '../../../utilities/chat/conversation_utility.dart';
 import '../../../widgets/common/avatars/user_avatar.dart';
 import '../../../constants/chat/chat_options_constants.dart';
 import '../../../widgets/chat/options/chat_options_sheet.dart';
+import '../../../widgets/chat/options/group_info_sheet.dart';
 
 /// Avatar and name, with "typing..." or their status (Online · custom line) under it.
 class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -31,7 +32,8 @@ class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       titleSpacing: 0,
       title: InkWell(
-        onTap: partner == null ? null : () => context.push(AppRoutes.user(partner.user.userName)),
+        // A partner's name opens their profile; a group's name opens its info (members and admins).
+        onTap: () => partner == null ? showGroupInfo(context, conversation) : context.push(AppRoutes.user(partner.user.userName)),
         child: Row(children: [
           if (partner != null) UserAvatar(user: partner.user, size: 36, isOnline: partner.isOnline, presence: partner.presence) else const Icon(Icons.groups),
           const SizedBox(width: 10),

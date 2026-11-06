@@ -14,6 +14,7 @@ import '../../../utilities/format/formatters.dart';
 import '../../common/avatars/user_avatar.dart';
 import '../../common/motion/fade_slide_in.dart';
 import 'message_attachments.dart';
+import '../conversation/admin_badge.dart';
 import 'message_ticks.dart';
 import 'voice_note_player.dart';
 
@@ -28,6 +29,7 @@ class MessageBubble extends StatelessWidget {
     required this.onLongPress,
     required this.onSwipeReply,
     this.readState,
+    this.isSenderAdmin = false,
   });
 
   final Message message;
@@ -39,6 +41,9 @@ class MessageBubble extends StatelessWidget {
 
   /// Your messages only: the ticks next to the time.
   final ReadState? readState;
+
+  /// Group admins get the Admin badge beside their name.
+  final bool isSenderAdmin;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +100,14 @@ class MessageBubble extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2),
         child: Column(crossAxisAlignment: isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start, children: [
-          if (showName) Padding(padding: const EdgeInsets.only(left: 44, bottom: 2), child: Text(message.sender.userName, style: Theme.of(context).textTheme.bodySmall)),
+          if (showName)
+            Padding(
+              padding: const EdgeInsets.only(left: 44, bottom: 2),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(message.sender.userName, style: Theme.of(context).textTheme.bodySmall),
+                if (isSenderAdmin) ...[const SizedBox(width: 6), const AdminBadge()],
+              ]),
+            ),
           Row(mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.end, children: [
             if (!isMine) SizedBox(width: 36, child: showAvatar ? UserAvatar(user: message.sender, size: 28) : null),
             GestureDetector(

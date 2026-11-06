@@ -6,6 +6,8 @@ class ChatMessages {
   static const String title = 'Messages';
   static const String inbox = 'Inbox';
   static const String all = 'All';
+  static const String you = 'You';
+  static const String admin = 'Admin';
   static const String read = 'Read';
   static const String tickSent = 'Sent';
   static const String tickSeenBySome = 'Seen by some';

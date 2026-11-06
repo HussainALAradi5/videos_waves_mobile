@@ -5,6 +5,7 @@ import '../../../constants/chat/chat_messages_constants.dart';
 import '../../../constants/common/ui_constants.dart';
 import '../../../controllers/chat/thread/thread_controller.dart';
 import '../../../enums/chat/conversation/chat_background.dart';
+import '../../../enums/chat/conversation/member_role.dart';
 import '../../../utilities/chat/conversation_utility.dart';
 import '../../../utilities/format/formatters.dart';
 import '../../../widgets/chat/message/message_bubble.dart';
@@ -24,6 +25,7 @@ class ThreadMessageList extends StatelessWidget {
     final messages = thread.messages;
     final members = thread.conversation?.members ?? const [];
     final isGroup = thread.conversation?.isGroup ?? false;
+    final adminIds = {for (final member in members) if (member.role == MemberRole.admin) member.user.id};
     final lastMineIndex = messages.indexWhere((message) => message.sender.id == thread.myUserId && !message.isSystem);
     final hasTyping = thread.typingUserIds.isNotEmpty;
     final offset = hasTyping ? 1 : 0;
@@ -62,6 +64,7 @@ class ThreadMessageList extends StatelessWidget {
                 onLongPress: () => showMessageActions(context, thread, message),
                 onSwipeReply: () => thread.setReplyTo(message),
                 readState: isMine ? readStateOf(message, members) : null,
+                isSenderAdmin: adminIds.contains(message.sender.id),
               ),
             if (seenCount > 0)
               Align(

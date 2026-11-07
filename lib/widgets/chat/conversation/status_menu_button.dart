@@ -14,7 +14,7 @@ const Map<PresenceMode, ({String label, Color color})> _modes = {
   PresenceMode.invisible: (label: 'Appear offline', color: AppColors.cancelled),
 };
 
-/// Your status as a coloured dot; tap to pick Online, Away, Busy, or Appear offline (the custom line is in Settings).
+/// Your status as a pill (coloured dot and label); tap to pick Online, Away, Busy, or Appear offline (the custom line is in Settings).
 class StatusMenuButton extends StatelessWidget {
   const StatusMenuButton({super.key});
 
@@ -22,9 +22,24 @@ class StatusMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final mode = context.select<SettingsController, PresenceMode>((settings) => settings.settings?.presence ?? PresenceMode.online);
     Widget dot(Color color) => Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+    final current = _modes[mode]!;
     return PopupMenuButton<PresenceMode>(
       tooltip: ChatMessages.statusPicker,
-      icon: dot(_modes[mode]!.color),
+      // A pill (dot, label, arrow) like the web, so it reads as something to tap and change.
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          dot(current.color),
+          const SizedBox(width: 6),
+          Text(current.label, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+          const Icon(Icons.arrow_drop_down, size: 18),
+        ]),
+      ),
       onSelected: (next) => runWithFeedback(context, () => context.read<SettingsController>().change({'presence': next.wire})),
       itemBuilder: (_) => [
         for (final entry in _modes.entries)

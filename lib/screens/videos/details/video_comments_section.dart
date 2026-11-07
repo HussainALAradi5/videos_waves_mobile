@@ -11,6 +11,8 @@ import '../../../widgets/common/feedback/error_view.dart';
 import '../../../widgets/common/feedback/skeleton_list.dart';
 import '../../../widgets/common/motion/fade_slide_in.dart';
 import '../../../widgets/videos/comment/comment_composer.dart';
+import '../../../constants/common/routes_constants.dart';
+import '../../../widgets/videos/comment/comments_locked.dart';
 import 'comment_thread.dart';
 
 class VideoCommentsSection extends StatelessWidget {
@@ -28,6 +30,10 @@ class VideoCommentsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSignedIn = context.select<AuthController, bool>((auth) => auth.isAuthenticated);
+    if (!isSignedIn) {
+      final videoId = context.select<VideoDetailsController, String?>((details) => details.video?.id);
+      return CommentsLocked(returnTo: videoId == null ? AppRoutes.feed : AppRoutes.video(videoId));
+    }
     final comments = context.watch<CommentListController>();
     final items = comments.items;
     return Column(
@@ -37,10 +43,7 @@ class VideoCommentsSection extends StatelessWidget {
         Text('${AppMessages.commentsTitle} (${context.select<VideoDetailsController, int>((details) => details.video?.commentsCount ?? 0)})',
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: Spacing.sm),
-        if (isSignedIn)
-          CommentComposer(isPosting: comments.isPosting, onSubmit: (content) => _post(context, content))
-        else
-          const Text(AppMessages.signInToComment),
+        CommentComposer(isPosting: comments.isPosting, onSubmit: (content) => _post(context, content)),
         const SizedBox(height: Spacing.sm),
         if (comments.isLoading && items.isEmpty) const SkeletonList(rows: 3),
         if (comments.error != null && items.isEmpty) ErrorView(error: comments.error!, onRetry: comments.loadFirstPage),

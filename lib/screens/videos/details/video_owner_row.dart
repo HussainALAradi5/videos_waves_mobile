@@ -64,7 +64,8 @@ class VideoOwnerRow extends StatelessWidget {
         ]),
       ),
       const Spacer(),
-      LikeButton(video: video, isBusy: details.isLiking, onPressed: () => _like(context, details)),
+      // Guests can't like (same as the web); the count still shows in the stats row.
+      if (user != null) LikeButton(video: video, isBusy: details.isLiking, onPressed: () => _like(context, details)),
       ActionSheetButton(tooltip: VideoMessages.editVideo, items: [
         if (isOwner) ActionItem(label: VideoMessages.editVideo, icon: Icons.edit_outlined, onSelected: () => VideoEditSheet.show(context, details)),
         if (canManage) ActionItem(label: VideoMessages.deleteVideo, icon: Icons.delete_outline, isDanger: true, onSelected: () => _delete(context, details)),

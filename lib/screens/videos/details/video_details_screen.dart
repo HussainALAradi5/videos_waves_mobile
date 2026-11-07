@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../controllers/users/auth/auth_controller.dart';
 import '../../../controllers/videos/comment/comment_list_controller.dart';
 import '../../../controllers/videos/video/video_details_controller.dart';
 import '../../../controllers/videos/video/video_feed_controller.dart';
@@ -27,7 +28,14 @@ class VideoDetailsScreen extends StatelessWidget {
             onVideoDeleted: feed.removeVideo,
           )..load(),
         ),
-        ChangeNotifierProvider(create: (_) => CommentListController(dependencies.commentService, videoId)..loadFirstPage()),
+        // Guests see the locked panel, so their comments are never fetched (same as the web).
+        ChangeNotifierProvider(
+          create: (context) {
+            final comments = CommentListController(dependencies.commentService, videoId);
+            if (context.read<AuthController>().isAuthenticated) comments.loadFirstPage();
+            return comments;
+          },
+        ),
       ],
       child: const VideoDetailsBody(),
     );

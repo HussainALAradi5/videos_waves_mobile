@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../constants/common/messages_constants.dart';
 import '../../../constants/common/routes_constants.dart';
 import '../../../constants/common/ui_constants.dart';
+import '../../../controllers/users/settings/settings_controller.dart';
 import '../../../controllers/videos/video/video_details_controller.dart';
 import '../../../utilities/errors/api_exception.dart';
 import '../../../widgets/common/feedback/empty_view.dart';
@@ -36,7 +37,11 @@ class VideoDetailsBody extends StatelessWidget {
       body = ListView(
         padding: const EdgeInsets.only(bottom: Spacing.xl),
         children: [
-          Hero(tag: 'video-${video.id}', child: VideoPlayerView(url: video.videoUrl, onFirstPlay: details.recordViewOnce)),
+          Hero(tag: 'video-${video.id}', child: VideoPlayerView(
+              url: video.videoUrl,
+              onFirstPlay: details.recordViewOnce,
+              autoplay: context.select<SettingsController, bool>((settings) => settings.settings?.autoplayVideos ?? true),
+            )),
           Padding(
             padding: const EdgeInsets.all(Spacing.md),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

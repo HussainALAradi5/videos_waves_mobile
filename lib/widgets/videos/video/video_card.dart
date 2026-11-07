@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../constants/common/gradients_constants.dart';
 import '../../../constants/common/routes_constants.dart';
 import '../../../constants/common/ui_constants.dart';
 import '../../../models/videos/video/video.dart';
 import '../../../utilities/format/formatters.dart';
 import '../../../utilities/format/media_format_utility.dart';
 import '../../common/avatars/user_avatar.dart';
+import 'video_preview.dart';
 import 'video_stats_row.dart';
 
-/// Feed card: the CDN thumbnail with its duration, then the owner row.
+/// Feed card: a still of the video (CDN thumbnail or first frame) with its duration, then the owner row.
 class VideoCard extends StatelessWidget {
   const VideoCard({super.key, required this.video, required this.onTap});
 
@@ -20,7 +20,6 @@ class VideoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final thumbnail = video.thumbnailUrl;
     return Card(
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.only(bottom: Spacing.md),
@@ -32,10 +31,7 @@ class VideoCard extends StatelessWidget {
             child: Stack(fit: StackFit.expand, children: [
               Hero(
                 tag: 'video-${video.id}',
-                child: thumbnail == null
-                    ? const DecoratedBox(decoration: BoxDecoration(gradient: AppGradients.brand))
-                    : Image.network(thumbnail, fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => const DecoratedBox(decoration: BoxDecoration(gradient: AppGradients.brand))),
+                child: VideoPreview(videoUrl: video.videoUrl, thumbnailUrl: video.thumbnailUrl),
               ),
               const Center(child: Icon(Icons.play_circle_fill, size: 56, color: AppColors.onVideoMuted)),
               if (video.durationSeconds != null)

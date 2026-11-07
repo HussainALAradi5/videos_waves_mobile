@@ -27,7 +27,7 @@ class ThreadAppBar extends StatelessWidget implements PreferredSizeWidget {
     final status = thread.typingUserIds.isNotEmpty
         ? ChatMessages.typing
         : conversation.isGroup
-            ? ChatMessages.members(conversation.membersCount + 1)
+            ? ChatMessages.members(conversation.membersCount)
             : (partner == null ? null : describePresence(partner, ChatMessages.presenceLabels));
     return AppBar(
       titleSpacing: 0,

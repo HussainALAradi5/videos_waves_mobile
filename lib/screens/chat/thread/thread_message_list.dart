@@ -60,7 +60,8 @@ class ThreadMessageList extends StatelessWidget {
                 message: message,
                 isMine: isMine,
                 showAvatar: !isMine && endsRun,
-                showName: isGroup && !isMine && (older == null || older.sender.id != message.sender.id),
+                // A group notice ("admin created the group") breaks the run, so the next message shows its sender again.
+                showName: isGroup && !isMine && (older == null || older.isSystem || older.sender.id != message.sender.id),
                 onLongPress: () => showMessageActions(context, thread, message),
                 onSwipeReply: () => thread.setReplyTo(message),
                 readState: isMine ? readStateOf(message, members) : null,

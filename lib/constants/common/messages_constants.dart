@@ -58,6 +58,9 @@ class AppMessages {
   static const String commentPost = 'Post';
   static const String noComments = 'No comments yet. Start the conversation!';
   static const String signInToComment = 'Sign in to like and comment.';
+  static const String commentsLockedTitle = 'Comments are for members';
+  static const String commentsLockedDescription = 'Sign in to read the conversation, reply, and like videos.';
+  static const String signUp = 'Sign up';
   static const String deleteCommentTitle = 'Delete this comment?';
   static const String deleteCommentBody = 'This cannot be undone.';
 

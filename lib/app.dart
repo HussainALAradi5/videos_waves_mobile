@@ -10,7 +10,7 @@ import 'controllers/videos/video/video_feed_controller.dart';
 import 'enums/common/toast_type.dart';
 import 'globals/app_dependencies.dart';
 import 'utilities/ui/feedback_utility.dart';
-import 'widgets/common/feedback/toast_overlay.dart';
+import 'widgets/common/feedback/toast_host.dart';
 
 class VideosWavesApp extends StatefulWidget {
   const VideosWavesApp({super.key, required this.dependencies});
@@ -68,7 +68,7 @@ class _VideosWavesAppState extends State<VideosWavesApp> {
           themeMode: settings.themeMode,
           routerConfig: _router,
           // Toasts float above every route, dialogs included.
-          builder: (context, child) => Stack(children: [child ?? const SizedBox.shrink(), const ToastOverlay()]),
+          builder: (context, child) => ToastHost(child: child ?? const SizedBox.shrink()),
         ),
       ),
     );

@@ -80,7 +80,7 @@ class _ToastCardState extends State<ToastCard> with TickerProviderStateMixin {
                         },
                         child: Text(item.actionLabel!),
                       ),
-                    IconButton(tooltip: ToastLooks.dismiss, visualDensity: VisualDensity.compact, icon: const Icon(Icons.close, size: 18), onPressed: _close),
+                    IconButton(visualDensity: VisualDensity.compact, icon: const Icon(Icons.close, size: 18, semanticLabel: ToastLooks.dismiss), onPressed: _close),
                   ]),
                 ),
                 Positioned(

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../constants/common/gradients_constants.dart';
 import '../../../constants/common/routes_constants.dart';
 import '../../../constants/users/social/social_messages_constants.dart';
 import '../../../controllers/videos/video/video_feed_controller.dart';
 import '../../../globals/app_dependencies.dart';
+import '../../../widgets/videos/video/video_preview.dart';
 import '../../../widgets/common/feedback/empty_view.dart';
 import '../../../widgets/common/waves/wave_loader.dart';
 
@@ -44,14 +44,11 @@ class _ProfileVideosGridState extends State<ProfileVideosGrid> {
           itemBuilder: (context, index) {
             if (index >= items.length - 3) _videos.loadNextPage();
             final video = items[index];
-            final thumbnail = video.thumbnailUrl;
             return GestureDetector(
               onTap: () => context.push(AppRoutes.video(video.id)),
               child: Hero(
                 tag: 'video-${video.id}',
-                child: thumbnail == null
-                    ? const DecoratedBox(decoration: BoxDecoration(gradient: AppGradients.brand))
-                    : Image.network(thumbnail, fit: BoxFit.cover, errorBuilder: (_, _, _) => const DecoratedBox(decoration: BoxDecoration(gradient: AppGradients.brand))),
+                child: VideoPreview(videoUrl: video.videoUrl, thumbnailUrl: video.thumbnailUrl),
               ),
             );
           },

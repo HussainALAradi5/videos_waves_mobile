@@ -112,6 +112,8 @@ class MessageBubble extends StatelessWidget {
             if (!isMine) SizedBox(width: 36, child: showAvatar ? UserAvatar(user: message.sender, size: 28) : null),
             GestureDetector(
               onLongPress: onLongPress,
+              // Right-click (web demo, desktop) opens the same actions as a long-press.
+              onSecondaryTap: onLongPress,
               onHorizontalDragEnd: (details) {
                 if ((details.primaryVelocity ?? 0) > 300) onSwipeReply();
               },

@@ -1,4 +1,6 @@
+import '../../../enums/users/settings/bubble_style.dart';
 import '../../../enums/users/settings/setting_control.dart';
+import '../../../widgets/users/settings/bubble_shape_icon.dart';
 import '../../../models/common/ui/status_option.dart';
 import '../../common/app_colors_constants.dart';
 import '../../../models/common/ui/dropdown_option.dart';
@@ -25,9 +27,9 @@ const List<SettingSection> settingSections = [
   ]),
   SettingSection(title: SettingsMessages.chats, showsBubblePreview: true, rows: [
     SettingRow(key: 'bubbleStyle', label: 'Bubble shape', description: 'Rounded, square, or minimal outlines.', control: SettingControl.choice, choices: [
-      DropdownOption(value: 'rounded', label: 'Rounded'),
-      DropdownOption(value: 'square', label: 'Square'),
-      DropdownOption(value: 'minimal', label: 'Minimal'),
+      DropdownOption(value: 'rounded', label: 'Rounded', leading: BubbleShapeIcon(shape: BubbleStyle.rounded)),
+      DropdownOption(value: 'square', label: 'Square', leading: BubbleShapeIcon(shape: BubbleStyle.square)),
+      DropdownOption(value: 'minimal', label: 'Minimal', leading: BubbleShapeIcon(shape: BubbleStyle.minimal)),
     ]),
     SettingRow(key: 'bubbleColor', label: 'My messages', description: 'The colour of the messages you send.', control: SettingControl.swatches, choices: _bubbleColors),
     SettingRow(key: 'othersBubbleColor', label: 'Their messages', description: 'The colour of messages you receive.', control: SettingControl.swatches, choices: _bubbleColors),

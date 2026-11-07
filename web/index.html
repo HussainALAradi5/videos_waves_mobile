@@ -31,6 +31,8 @@
 
   <title>videos_waves_mobile</title>
   <link rel="manifest" href="manifest.json">
+  <!-- Videos use the app's own controls, so clicks on them go to Flutter (cards open, players toggle). -->
+  <style>flt-platform-view video { pointer-events: none; }</style>
 </head>
 <body>
   <!--
